@@ -40,12 +40,12 @@ body {
     background-color: #FFB30F;
 }
 
-.post-link {
+.stock-link {
     text-decoration: none;
     color: #292b2C;
 }
 
-.post-link:hover,
+.stock-link:hover,
 .page-link {
     color: #FFB30F;
 }
@@ -53,6 +53,35 @@ body {
 .card-container {
     outline: 2px solid #507DBC;
     outline-offset: -10px;
+}
+
+
+/* Stock detail */
+
+.masthead {
+    padding: 25px 0;
+}
+
+.detail-image-container {
+    display: flex;
+    justify-content: center;
+    background-color: rgba(41, 43, 44, 0.15);
+    border-radius: 10px;
+    border-style: solid;
+    border-color: rgba(41, 43, 44, 0.1);
+    height: 150px;
+
+}
+
+.detail-image-container img {
+    margin: auto;
+    max-width: 25%;
+    max-height: 100px;
+    object-fit: scale-down;
+}
+
+.asset-title {
+    margin-top: 25px;
 }
 
 

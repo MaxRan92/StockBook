@@ -8,7 +8,7 @@
                 {% if "placeholder" in stockinfo.featured_image.url %}
                 <img src="" width="100%">
                 {% else %}
-                <img src=" {{ stockinfo.featured_image.url }}" width="100%">
+                <img src=" {{ stockinfo.logo_image.url }}" width="100%">
                 {% endif %}
             </div>
         </div>
@@ -19,11 +19,42 @@
                 <h1 class="asset-title">{{ stockinfo.title }} ({{ stockinfo.ticker }})</h1>
             </div>
             <div class="col-md-8">
-                <p>{{ stockinfo.content | safe }}</p>
+                <p>{{ stockinfo.description | safe }}</p>
             </div>
         </div>
     </div>
 </div>
 
+<div class="comments-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 card mb-4  mt-3">
+                <h3>Comments:</h3>
+                <div class="comments-card">
+                    <!-- if there is at least one comment -->
+                    {% if comments %}
+                    <!-- For loop to iterate through comments -->
+                        {% for comment in comments %}
+                        <div class="comments">
+                            <p>
+                                {{ comment.name }}
+                                <span>
+                                    {{ comment.created_on }}
+                                </span> wrote:
+                            </p>
+                            <!-- Body of the comment -->
+                            {{ comment.body | linebreaks }}
+                        </div>
+                        <!-- end of loop -->
+                        {% endfor %}
+                    <!-- else, if there is no comment -->    
+                    {% else %}
+                        <p>No comments, be the first one!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock content %}
