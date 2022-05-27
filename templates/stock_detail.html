@@ -1,5 +1,7 @@
 {% extends 'base.html' %} {% block content %}
 
+{% load crispy_forms_tags %}
+
 <div class="masthead">
     <div class="container">
         <div class="row">
@@ -28,28 +30,42 @@
 <div class="comments-area">
     <div class="container">
         <div class="row">
-            <div class="col-md-12 card mb-4  mt-3">
+            <div class="col-md-8 card mb-4  mt-3">
                 <h3>Comments:</h3>
                 <div class="comments-card">
                     <!-- if there is at least one comment -->
                     {% if comments %}
                     <!-- For loop to iterate through comments -->
-                        {% for comment in comments %}
-                        <div class="comments">
-                            <p>
-                                {{ comment.name }}
-                                <span>
-                                    {{ comment.created_on }}
-                                </span> wrote:
-                            </p>
-                            <!-- Body of the comment -->
-                            {{ comment.body | linebreaks }}
-                        </div>
-                        <!-- end of loop -->
-                        {% endfor %}
-                    <!-- else, if there is no comment -->    
+                    {% for comment in comments %}
+                    <div class="comments">
+                        <p>
+                            {{ comment.name }}
+                            <span>
+                                {{ comment.created_on }}
+                            </span> wrote:
+                        </p>
+                        <!-- Body of the comment -->
+                        {{ comment.body | linebreaks }}
+                    </div>
+                    <!-- end of loop -->
+                    {% endfor %}
+                    <!-- else, if there is no comment -->
                     {% else %}
-                        <p>No comments, be the first one!</p>
+                    <p>No comments, be the first one!</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-4 card mb-4  mt-3 ">
+                <div>
+                    {% if user.is_authenticated %}
+
+                    <h3>Leave a comment:</h3>
+                    <p>Posting as: {{ user.username }}</p>
+                    <form method="post">
+                        {{ comment_form | crispy }}
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-lg">Submit</button>
+                    </form>
                     {% endif %}
                 </div>
             </div>

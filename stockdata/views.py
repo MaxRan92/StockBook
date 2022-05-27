@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import generic, View
 from .models import StockInfo
+from .forms import CommentForm
 
 
 class StockList(generic.ListView):
@@ -23,5 +24,6 @@ class StockDetail(View):
             {
                 "stockinfo": stockinfo,
                 "comments": comments,
+                "comment_form": CommentForm()
             },
         )
