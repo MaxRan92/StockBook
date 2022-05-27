@@ -10,7 +10,7 @@ class StockInfo(models.Model):
     title = models.CharField(max_length=200, unique=True)
     ticker = models.CharField(max_length=6, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="stock_info")
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="stockdata_stockinfo")
     updated_on = models.DateTimeField(auto_now=True)
     description = models.TextField()
     logo_image = CloudinaryField('image', default='placeholder')
