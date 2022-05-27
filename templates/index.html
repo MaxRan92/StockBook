@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Blog Entries Column -->
+        <div class="col-12 mt-3 left">
+            <div class="row">
+                {% for StockInfo in StockInfo_list %}
+                <div class="div col-md-3 card-container">
+                    <div class="div card mb-3">
+                        <div class="div card-body">
+                            <div class="image-container">
+                                {% if "placeholder" in StockInfo.logo_image.url %}
+                                <img class="card-img-top" src="https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png?202205200410">
+                                {% else %}
+                                <img class="card-img-top" src=" {{ asset.logo_image.url }}">
+                                {% endif %}
+                            </div>
+                            <a href="{% url 'stock_detail' StockInfo.slug %}" class="post-link">
+                                <h2 class="card-title">{{ StockInfo.title }}</h2>
+                                <p class="card-text">{{ StockInfo.excerpt }}</p>
+                            </a>
+                            <hr />
+                            <p class="card-text text-muted h6">{{ StockInfo.created_on}}</p>
+                        </div>
+                    </div>
+                </div>
+                {% if forloop.counter|divisibleby:4 %}
+            </div>
+            <div class="row">
+                {% endif %}
+                {% endfor %}
+        </div>
+    </div>
+</div>
+{% if is_paginated %}
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">&laquo; PREV </a></li>
+        {% endif %}
+        {% if page_obj.has_next %}
+        <li><a href="?page={{ page_obj.next_page_number }}" class="page-link"> NEXT &raquo;</a></li>
+
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+</div>
+
+{%endblock%}
