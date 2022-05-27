@@ -8,23 +8,23 @@
         <!-- Blog Entries Column -->
         <div class="col-12 mt-3 left">
             <div class="row">
-                {% for StockInfo in StockInfo_list %}
+                {% for stockinfo in stockinfo_list %}
                 <div class="div col-md-3 card-container">
                     <div class="div card mb-3">
                         <div class="div card-body">
                             <div class="image-container">
-                                {% if "placeholder" in StockInfo.logo_image.url %}
+                                {% if "placeholder" in stockinfo.logo_image.url %}
                                 <img class="card-img-top" src="https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png?202205200410">
                                 {% else %}
-                                <img class="card-img-top" src=" {{ asset.logo_image.url }}">
+                                <img class="card-img-top" src=" {{ stockinfo.logo_image.url }}">
                                 {% endif %}
                             </div>
-                            <a href="{% url 'stock_detail' StockInfo.slug %}" class="post-link">
-                                <h2 class="card-title">{{ StockInfo.title }}</h2>
-                                <p class="card-text">{{ StockInfo.excerpt }}</p>
+                            <a href="" class="post-link">
+                                <h2 class="card-title">{{ stockinfo.title }}</h2>
+                                <p class="card-text">{{ stockinfo.excerpt }}</p>
                             </a>
                             <hr />
-                            <p class="card-text text-muted h6">{{ StockInfo.created_on}}</p>
+                            <p class="card-text text-muted h6">{{ stockinfo.created_on}}</p>
                         </div>
                     </div>
                 </div>
