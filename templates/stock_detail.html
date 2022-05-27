@@ -1,0 +1,29 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="masthead">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 detail-image-container">
+                <!-- The featured image URL goes in the src attribute -->
+                {% if "placeholder" in stockinfo.featured_image.url %}
+                <img src="" width="100%">
+                {% else %}
+                <img src=" {{ stockinfo.featured_image.url }}" width="100%">
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+
+                <!-- asset title goes in these h1 tags -->
+                <h1 class="asset-title">{{ stockinfo.title }} ({{ stockinfo.ticker }})</h1>
+            </div>
+            <div class="col-md-8">
+                <p>{{ stockinfo.content | safe }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

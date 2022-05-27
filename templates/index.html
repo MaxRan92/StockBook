@@ -19,7 +19,7 @@
                                 <img class="card-img-top" src=" {{ stockinfo.logo_image.url }}">
                                 {% endif %}
                             </div>
-                            <a href="" class="post-link">
+                            <a href="{% url 'stock_detail' stockinfo.slug  %}" class="post-link">
                                 <h2 class="card-title">{{ stockinfo.title }}</h2>
                                 <p class="card-text">{{ stockinfo.excerpt }}</p>
                             </a>
