@@ -4,7 +4,10 @@ from django.shortcuts import render, get_object_or_404
 from django.views import generic, View
 from .models import StockInfo, Comment
 from .forms import CommentForm
+from polygon import RESTClient
 
+
+API_KEY = "R7PbrIpBoMRsJuAHnAPrD07XGMgpJy89"
 
 class StockList(generic.ListView):
     model = StockInfo
@@ -20,7 +23,8 @@ class StockDetail(View):
         stockinfo = get_object_or_404(queryset, slug=slug)
         all_comments = Comment.objects.filter(approved=True)
         comments = stockinfo.comments.filter(approved=True).order_by('-created_on')
-        #CAN WE REFACTOR?
+        
+        #CAN WE REFACTOR THIS?
         bulls_num = len(stockinfo.comments.filter(sentiment='BULL', approved=True).order_by('-created_on'))
         bears_num = len(stockinfo.comments.filter(sentiment='BEAR', approved=True).order_by('-created_on'))
         if bulls_num == 0 or bears_num == 0:
@@ -28,6 +32,8 @@ class StockDetail(View):
         else:
             bulls_bears_ratio = bulls_num/bears_num
         
+        last_trade_price = self.get_last_trade_price(request, stockinfo.ticker)
+
         return render(
             request,
             "stock_detail.html",
@@ -39,9 +45,17 @@ class StockDetail(View):
                 "bulls_num": bulls_num,
                 "bears_num": bears_num,
                 "bulls_bears_ratio": bulls_bears_ratio,
+                "last_trade_price": last_trade_price,
             },
         )
 
+    def get_last_trade_price(self, request, ticker):
+        client = RESTClient(API_KEY)
+
+        last_trade_price = client.get_last_trade(ticker, params=None, raw=False).price
+
+        return last_trade_price
+        
     def post(self, request, slug, *args, **kwargs):
         """
         Post method to post the comment.
