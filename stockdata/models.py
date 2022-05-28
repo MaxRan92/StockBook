@@ -4,6 +4,11 @@ from django.contrib.auth.models import User
 from cloudinary.models import CloudinaryField
 
 STATUS = ((0, "Draft"), (1, "Published"))
+SENTIMENT_CHOICES = (
+        ('BULL', 'Bullish'),
+        ('HOLD', 'Hold'),
+        ('BEAR', 'Bearish'),
+    )
 
 
 class StockInfo(models.Model):
@@ -32,6 +37,7 @@ class Comment(models.Model):
     body = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)
+    sentiment = models.CharField(max_length=9, choices=SENTIMENT_CHOICES, default="HOLD")
 
     class Meta:
         ordering = ["created_on"]

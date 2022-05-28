@@ -30,6 +30,9 @@ class StockDetail(View):
         )
 
     def post(self, request, slug, *args, **kwargs):
+        """
+        Post method to post the comment.
+        """
         queryset = StockInfo.objects.filter(status=1)
         stockinfo = get_object_or_404(queryset, slug=slug)
         comments = stockinfo.comments.filter(approved=True).order_by('-created_on')
