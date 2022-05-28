@@ -1,3 +1,5 @@
+import pandas as pd
+import yfinance as yf
 from django.shortcuts import render, get_object_or_404
 from django.views import generic, View
 from .models import StockInfo, Comment
@@ -70,3 +72,4 @@ class StockDetail(View):
                 "comment_form": CommentForm,
             },
         )
+
