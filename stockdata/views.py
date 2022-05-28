@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import generic, View
-from .models import StockInfo
+from .models import StockInfo, Comment
 from .forms import CommentForm
 
 
@@ -16,10 +16,15 @@ class StockDetail(View):
     def get(self, request, slug, *args, **kwargs):
         queryset = StockInfo.objects.filter(status=1)
         stockinfo = get_object_or_404(queryset, slug=slug)
+        all_comments = Comment.objects.filter(approved=True)
         comments = stockinfo.comments.filter(approved=True).order_by('-created_on')
+        #CAN WE REFACTOR?
         bulls_num = len(stockinfo.comments.filter(sentiment='BULL', approved=True).order_by('-created_on'))
         bears_num = len(stockinfo.comments.filter(sentiment='BEAR', approved=True).order_by('-created_on'))
-        
+        if bulls_num == 0 or bears_num == 0:
+            bulls_bears_ratio = "N/A"
+        else:
+            bulls_bears_ratio = bulls_num/bears_num
         
         return render(
             request,
@@ -31,6 +36,7 @@ class StockDetail(View):
                 "comment_form": CommentForm,
                 "bulls_num": bulls_num,
                 "bears_num": bears_num,
+                "bulls_bears_ratio": bulls_bears_ratio,
             },
         )
 
@@ -41,8 +47,7 @@ class StockDetail(View):
         queryset = StockInfo.objects.filter(status=1)
         stockinfo = get_object_or_404(queryset, slug=slug)
         comments = stockinfo.comments.filter(approved=True).order_by('-created_on')
-        # bulls_num = comments.sentiment.count('BULL')
-        # bears_num = comments.sentiment.count('BEAR')
+
         
         comment_form = CommentForm(data=request.POST)
 

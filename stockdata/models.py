@@ -22,8 +22,6 @@ class StockInfo(models.Model):
     excerpt = models.TextField(blank=True)
     created_on = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=STATUS, default=0)
-    bulls = models.IntegerField(default=0)
-    bears = models.IntegerField(default=0)
     
     class Meta:
         ordering = ["-created_on"]

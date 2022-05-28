@@ -19,9 +19,12 @@
 
                 <!-- asset title goes in these h1 tags -->
                 <h1 class="asset-title">{{ stockinfo.title }} ({{ stockinfo.ticker }})</h1>
-                <h2>Sentiment Analysis</h2>
-                <p>Bulls: {{ bulls_num }}</p>
-                <p>Bears: {{ bears_num }}</p>
+                <h3>Sentiment Analysis</h3>
+                <p>
+                    Bulls:<span>{{ bulls_num }}</span><br>
+                    Bears:<span> {{ bears_num }}</span><br>
+                    Ratio:<span> {{ bulls_bears_ratio }}</span>
+                </p>
             </div>
             <div class="col-md-8">
                 <p>{{ stockinfo.description | safe }}</p>
@@ -49,11 +52,11 @@
                         </p>
                         <p>
                             {% if comment.sentiment == 'BULL' %}
-                                <p>Sentiment: Bullish</p>
+                            <p>Sentiment: Bullish</p>
                             {% elif comment.sentiment == 'BEAR' %}
-                                <p>Sentiment: Bearish</p>
+                            <p>Sentiment: Bearish</p>
                             {% else %}
-                                <p>Sentiment: Hold</p>     
+                            <p>Sentiment: Hold</p>
                             {% endif %}
                         </p>
                         <!-- Body of the comment -->
