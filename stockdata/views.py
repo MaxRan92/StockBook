@@ -1,5 +1,6 @@
 import pandas as pd
 import yfinance as yf
+from datetime import datetime, timedelta
 from django.shortcuts import render, get_object_or_404
 from django.views import generic, View
 from .models import StockInfo, Comment
@@ -32,7 +33,17 @@ class StockDetail(View):
         else:
             bulls_bears_ratio = bulls_num/bears_num
         
-        last_trade_price = self.get_last_trade_price(request, stockinfo.ticker)
+        # Get last trade price with datetime
+        self.get_last_trade_data(request, stockinfo.ticker)
+        last_trade_price = self.last_trade_data.price
+        last_trade_timestamp = self.last_trade_data.participant_timestamp
+        last_trade_datetime = datetime.fromtimestamp(last_trade_timestamp/1e9)
+
+        # Get previous day close price
+        previous_day = (last_trade_datetime - timedelta(1)).strftime('%Y-%m-%d')
+        self.get_daily_aggs(request, stockinfo.ticker, previous_day, previous_day)
+        last_close = self.aggs[0].close
+        daily_perf = Percent(last_trade_price / last_close - 1)
 
         return render(
             request,
@@ -46,15 +57,23 @@ class StockDetail(View):
                 "bears_num": bears_num,
                 "bulls_bears_ratio": bulls_bears_ratio,
                 "last_trade_price": last_trade_price,
+                "last_trade_datetime": last_trade_datetime,
+                "daily_perf": daily_perf,
             },
         )
 
-    def get_last_trade_price(self, request, ticker):
+
+    def get_last_trade_data(self, request, ticker):
         client = RESTClient(API_KEY)
 
-        last_trade_price = client.get_last_trade(ticker, params=None, raw=False).price
+        self.last_trade_data = client.get_last_trade(ticker, params=None, raw=False)
+    
 
-        return last_trade_price
+    def get_daily_aggs(self, request, ticker, start_date, end_date):
+        client = RESTClient(API_KEY)
+
+        self.aggs = client.get_aggs(ticker, 1, "day", start_date, end_date)
+
         
     def post(self, request, slug, *args, **kwargs):
         """
@@ -86,4 +105,8 @@ class StockDetail(View):
                 "comment_form": CommentForm,
             },
         )
+
+class Percent(float):
+    def __str__(self):
+        return '{:.2%}'.format(self)
 
