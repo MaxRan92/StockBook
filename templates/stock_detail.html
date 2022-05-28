@@ -42,7 +42,16 @@
                             {{ comment.name }}
                             <span>
                                 {{ comment.created_on }}
-                            </span> wrote:
+                            </span>
+                        </p>
+                        <p>
+                            {% if comment.sentiment == 'BULL' %}
+                                <p>Sentiment: Bullish</p>
+                            {% elif comment.sentiment == 'BEAR' %}
+                                <p>Sentiment: Bearish</p>
+                            {% else %}
+                                <p>Sentiment: Hold</p>     
+                            {% endif %}
                         </p>
                         <!-- Body of the comment -->
                         {{ comment.body | linebreaks }}
