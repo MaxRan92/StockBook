@@ -40,7 +40,7 @@ class StockDetail(View):
             comment_form.instance.email = request.user.email
             comment_form.instance.name = request.user.username
             comment = comment_form.save(commit=False)
-            comment.stockinfo = stockinfo
+            comment.stock = stockinfo
             comment.save()
         else:
             comment_form = CommentForm()
