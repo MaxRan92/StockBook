@@ -19,6 +19,9 @@
 
                 <!-- asset title goes in these h1 tags -->
                 <h1 class="asset-title">{{ stockinfo.title }} ({{ stockinfo.ticker }})</h1>
+                <h2>Sentiment Analysis</h2>
+                <p>Bulls: {{ bulls_num }}</p>
+                <p>Bears: {{ bears_num }}</p>
             </div>
             <div class="col-md-8">
                 <p>{{ stockinfo.description | safe }}</p>

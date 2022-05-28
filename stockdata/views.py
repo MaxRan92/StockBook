@@ -17,6 +17,9 @@ class StockDetail(View):
         queryset = StockInfo.objects.filter(status=1)
         stockinfo = get_object_or_404(queryset, slug=slug)
         comments = stockinfo.comments.filter(approved=True).order_by('-created_on')
+        bulls_num = len(stockinfo.comments.filter(sentiment='BULL', approved=True).order_by('-created_on'))
+        bears_num = len(stockinfo.comments.filter(sentiment='BEAR', approved=True).order_by('-created_on'))
+        
         
         return render(
             request,
@@ -26,6 +29,8 @@ class StockDetail(View):
                 "comments": comments,
                 "commented": False,
                 "comment_form": CommentForm,
+                "bulls_num": bulls_num,
+                "bears_num": bears_num,
             },
         )
 
@@ -36,6 +41,8 @@ class StockDetail(View):
         queryset = StockInfo.objects.filter(status=1)
         stockinfo = get_object_or_404(queryset, slug=slug)
         comments = stockinfo.comments.filter(approved=True).order_by('-created_on')
+        # bulls_num = comments.sentiment.count('BULL')
+        # bears_num = comments.sentiment.count('BEAR')
         
         comment_form = CommentForm(data=request.POST)
 

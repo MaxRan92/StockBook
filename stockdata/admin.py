@@ -8,7 +8,7 @@ class StockInfoAdmin(SummernoteModelAdmin):
     # apply summernote to the content text field
     # prepopulate slug with title, add filter, listdisplay, search functionality
 
-    list_display = ('title', 'slug', 'status', 'created_on')
+    list_display = ('title', 'slug', 'bulls', 'bears', 'status', 'created_on')
     search_fields = ['title', 'description']
     prepopulated_fields = {'slug': ('title',)}
     list_filter = ('status', 'created_on')
