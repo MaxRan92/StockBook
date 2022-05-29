@@ -3,6 +3,8 @@ import yfinance as yf
 from datetime import datetime, timedelta
 from django.shortcuts import render, get_object_or_404
 from django.views import generic, View
+from django.views.generic import DeleteView
+from django.urls import reverse_lazy
 from .models import StockInfo, Comment
 from .forms import CommentForm
 from polygon import RESTClient
@@ -105,6 +107,12 @@ class StockDetail(View):
                 "comment_form": CommentForm,
             },
         )
+
+class DeleteComment(DeleteView):
+    model = Comment
+    template_name = 'delete_comment.html'
+    success_url = reverse_lazy("")
+
 
 class Percent(float):
     def __str__(self):

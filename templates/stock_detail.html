@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} 
+
+{% block content %}
 
 {% load crispy_forms_tags %}
 
@@ -58,15 +60,12 @@
                             {% if comment.name == request.user.username %}
                             <div class="col-md-2">
                                 <p>
-                                    <button type="submit" class="btn btn-lg" name="send" value="delete"> Delete
+                                    <button type="submit" class="btn btn-lg" name="send" value="delete"> Update
                                     </button>
                                 </p>
                             </div>
                             <div class="col-md-2">
-                                <p>
-                                    <button type="submit" class="btn btn-lg" name="send" value="delete"> Update
-                                    </button>
-                                </p>
+                                <a class="btn btn-danger" href="{% url 'delete_comment' pk=comment.pk %}">Delete</a>
                             </div>
                             {% endif %}
                         </div>
