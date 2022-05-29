@@ -78,7 +78,7 @@
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <a type="button" id="submit-modal" class="btn btn-primary" href="">Yes</a>
+                                            <a type="button" id="submit-modal" class="btn btn-primary" href="{% url 'delete_comment' pk=comment.pk slug=stockinfo.slug %}">Yes</a>
                                             <a type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</a>
                                         </div>
                                     </div>

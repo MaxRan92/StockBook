@@ -1,5 +1,6 @@
 import pandas as pd
 import yfinance as yf
+from flask import url_for
 from datetime import datetime, timedelta
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic, View
@@ -113,13 +114,13 @@ def update_comment(UpdateView):
     template_name = 'update_comment.html'
     success_url = reverse_lazy("")
 
-def delete_comment(request, comment_id):
+def delete_comment(request, pk, slug):
     """
-    View that allows a user to delete a portfolio
+    View that allows a user to delete a comment
     """
-    comment = get_object_or_404(Comment, id=comment_id)
+    comment = get_object_or_404(Comment, pk=pk)
     comment.delete()
-    return redirect('stock_detail')
+    
 
 
 class Percent(float):
