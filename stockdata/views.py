@@ -1,10 +1,14 @@
 import pandas as pd
 import yfinance as yf
-from flask import url_for
+from flask import url_for, render_template
 from datetime import datetime, timedelta
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic, View
+from django.urls import reverse
+from django.contrib import messages
 from django.views.generic import DeleteView, UpdateView
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from .models import StockInfo, Comment
 from .forms import CommentForm
@@ -114,14 +118,25 @@ def update_comment(UpdateView):
     template_name = 'update_comment.html'
     success_url = reverse_lazy("")
 
-def delete_comment(request, pk, slug):
+@method_decorator(login_required, name="dispatch")
+class CommentDelete(DeleteView):
     """
-    View that allows a user to delete a comment
-    """
-    comment = get_object_or_404(Comment, pk=pk)
-    comment.delete()
-    
+    If user is logged in:
+    Direct user to delete_review.html template
+    User will be prompted with a message to confirm.
 
+    """
+    model = Comment
+    template_name = "delete_comment.html"
+    success_message = "Your Review was successfully deleted."
+    success_url = "/"
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super(CommentDelete, self).delete(request, *args, **kwargs)
+
+    def get_success_url(self, *args, **kwargs):
+        return reverse("stock_detail", kwargs={"slug": self.object.stock.slug})
 
 class Percent(float):
     def __str__(self):

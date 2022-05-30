@@ -59,30 +59,10 @@
                             </div>
                             {% if comment.name == request.user.username %}
                             <div class="col-md-2">
-                                <button class="btn" data-bs-toggle="modal" data-bs-target="#delete-comment_{{comment.pk}}">
-                                    <i class="fa-solid fa-ellipsis-vertical"></i>Delete
-                                </button>
+                                <a class="btn btn-submit" href="{% url 'delete_comment' stockinfo.slug comment.pk %}">Delete</a>
                             </div>
                             <div class="col-md-2">
-                                <a class="btn btn-submit" href="{% url 'update_comment' pk=comment.pk %}">Update</a>
-                            </div>
-
-                            <!-- Modal -->
-                            <div class="modal fade" id="delete-comment_{{comment.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="modal-title">{{ comment.name }}, do you want to delete this comment?
-                                            </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <a type="button" id="submit-modal" class="btn btn-primary" href="{% url 'delete_comment' pk=comment.pk slug=stockinfo.slug %}">Yes</a>
-                                            <a type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</a>
-                                        </div>
-                                    </div>
-                                </div>
+                                <a class="btn btn-submit" href="{% url 'update_comment' comment.pk %}">Update</a>
                             </div>
 
                             {% endif %}
