@@ -5,13 +5,14 @@ from datetime import datetime, timedelta
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic, View
 from django.urls import reverse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.views.generic import DeleteView, UpdateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from .models import StockInfo, Comment
-from .forms import CommentForm
+from .forms import CommentForm, EditForm
 from polygon import RESTClient
 
 
@@ -122,9 +123,8 @@ def update_comment(UpdateView):
 class CommentDelete(DeleteView):
     """
     If user is logged in:
-    Direct user to delete_review.html template
+    Direct user to delete_comment.html template
     User will be prompted with a message to confirm.
-
     """
     model = Comment
     template_name = "delete_comment.html"
@@ -141,4 +141,33 @@ class CommentDelete(DeleteView):
 class Percent(float):
     def __str__(self):
         return '{:.2%}'.format(self)
+
+
+@method_decorator(login_required, name="dispatch")
+class CommentEdit(UpdateView):
+    """
+    If user is logged in:
+    Direct user to update_comment.html template,
+    displaying ReviewForm for that specific review.
+    Post edited info back to the DB
+    return user to post.
+    display success message.
+    """
+    model = Comment
+    form_class = EditForm
+    template_name = "edit_comment.html"
+
+    def form_valid(self, form):
+        """
+        Upon success prompt the user with a success message.
+        """
+        messages.success(self.request, "Edit made!")
+        super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self, *args, **kwargs):
+        """
+        Upon success returns user to the stock detail page.
+        """
+        return reverse("stock_detail", kwargs={"slug": self.object.stock.slug})
 

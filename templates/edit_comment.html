@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+{% load crispy_forms_tags %}
+<!--If user is authenticated render view to update review.-->
+<div class="container">
+    {% if user.is_authenticated %}
+        <h1>Edit your Comment: </h1>
+        <form method="post">
+            {{ form.media }}
+            {{ form | crispy }}
+            {% csrf_token %}
+            <button class="submit-btn btn"type="submit">Post</button>
+        </form>
+    {% endif %}
+</div>
+{%endblock%}

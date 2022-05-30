@@ -62,7 +62,7 @@
                                 <a class="btn btn-submit" href="{% url 'delete_comment' stockinfo.slug comment.pk %}">Delete</a>
                             </div>
                             <div class="col-md-2">
-                                <a class="btn btn-submit" href="{% url 'update_comment' comment.pk %}">Update</a>
+                                <a class="btn btn-submit" href="{% url 'edit_comment' stockinfo.slug comment.pk %}">Edit</a>
                             </div>
 
                             {% endif %}
