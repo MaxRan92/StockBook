@@ -4,9 +4,10 @@ from polygon import RESTClient
 from typing import cast
 from urllib3 import HTTPResponse
 from datetime import datetime, timedelta
+import pandas_market_calendars as mcal
 
 
-API_KEY = "R7PbrIpBoMRsJuAHnAPrD07XGMgpJy89"
+
 
 def polygon_data():
     client = RESTClient(API_KEY)
@@ -29,7 +30,7 @@ def polygon_data():
 
 
 
-
+API_KEY = "R7PbrIpBoMRsJuAHnAPrD07XGMgpJy89"
 
 def test():
 
@@ -37,21 +38,53 @@ def test():
         ticker = "AAPL"
 
         last_trade_data = client.get_last_trade(ticker, params=None, raw=False)
-        aggs = client.get_aggs(ticker, 1, "day", start_date, end_date)
 
         # Get last trade price with datetime
-        get_last_trade_data(request, stockinfo.ticker)
         last_trade_price = last_trade_data.price
-        last_trade_timestamp = last_trade_data.participant_timestamp
-        last_trade_datetime = datetime.fromtimestamp(last_trade_timestamp/1e9)
-
-        # Get previous day close price
-        previous_day = last_trade_datetime - timedelta(1)
-        get_daily_aggs(request, stockinfo.ticker, previous_day, previous_day)
-        last_close = aggs.close
-        daily_perf = last_trade_price / last_close - 1
+        print(last_trade_price)
+        
 
 
 
 
-test()
+
+def get_last_trade_data():
+    client = RESTClient(API_KEY)
+    ticker = "AAPL"
+
+    aggs = client.get_aggs(ticker, 1, "day", "2022-05-29", "2022-05-29")
+
+    print(aggs)
+
+
+
+
+def get_daily_aggs(self, request, ticker, start_date, end_date):
+    client = RESTClient(API_KEY)
+
+    self.aggs = client.get_aggs(ticker, 1, "day", start_date, end_date)
+
+
+def test3():
+    nyse = mcal.get_calendar('NYSE')
+    market_open_days = nyse.valid_days(start_date='2010-12-31', end_date='2030-12-31')
+    
+    
+    last_trade_datetime = datetime.today()
+    print(last_trade_datetime)
+    
+    market_open = False
+    while market_open is False:
+        for i in range(4):
+            previous_day = last_trade_datetime - timedelta(i+1)
+            if previous_day.strftime('%Y-%m-%d') in market_open_days:
+                market_open = True
+                print(i)
+                print(previous_day)
+                break
+                
+
+    
+    
+
+test3()

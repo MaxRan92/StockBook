@@ -1,5 +1,6 @@
 import pandas as pd
 import yfinance as yf
+import pandas_market_calendars as mcal
 from flask import url_for, render_template
 from datetime import datetime, timedelta
 from django.shortcuts import render, get_object_or_404, redirect
@@ -17,6 +18,7 @@ from polygon import RESTClient
 
 
 API_KEY = "R7PbrIpBoMRsJuAHnAPrD07XGMgpJy89"
+
 
 class StockList(generic.ListView):
     model = StockInfo
@@ -48,7 +50,18 @@ class StockDetail(View):
         last_trade_datetime = datetime.fromtimestamp(last_trade_timestamp/1e9)
 
         # Get previous day close price
-        previous_day = (last_trade_datetime - timedelta(1)).strftime('%Y-%m-%d')
+        nyse = mcal.get_calendar('NYSE')
+        market_open_days = nyse.valid_days(start_date='2010-12-31', end_date='2030-12-31')
+
+        market_open = False
+        while market_open is False:
+            for i in range(10):
+                previous_day = last_trade_datetime - timedelta(i+1)
+                if previous_day.strftime('%Y-%m-%d') in market_open_days:
+                    market_open = True
+                    break
+
+        previous_day = previous_day.strftime("%Y-%m-%d")
         self.get_daily_aggs(request, stockinfo.ticker, previous_day, previous_day)
         last_close = self.aggs[0].close
         daily_perf = Percent(last_trade_price / last_close - 1)
