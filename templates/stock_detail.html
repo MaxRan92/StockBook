@@ -23,15 +23,60 @@
                 <h1 class="asset-title">{{ stockinfo.title }} ({{ stockinfo.ticker }})</h1>
                 <h3>Last Price: <span>{{ last_trade_price }} ({{ daily_perf }})</span></h3>
                 <p>Last Update: <span>{{ last_trade_datetime }}</span></p>
-                <h3>Sentiment Analysis</h3>
-                <p>
-                    Bulls:<span>{{ bulls_num }}</span><br>
-                    Bears:<span> {{ bears_num }}</span><br>
-                    Ratio:<span> {{ bulls_bears_ratio }}</span>
-                </p>
             </div>
             <div class="col-md-8">
                 <p>{{ stockinfo.description | safe }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="analysis-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <h3>Sentiment</h3>
+                <table>
+                    <tr>
+                        <td>Bulls</td>
+                        <td>{{ bulls_num }}</td>
+                        
+                    </tr>
+                    <tr>
+                        <td>Bears</td>
+                        <td>{{ bears_num }}</td>
+                    </tr>
+                    <tr>
+                        <td>Ratio</td>
+                        <td>{{ bulls_bears_ratio }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-3">
+                <h3>Fundamentals</h3>
+                <table>
+                    <tr>
+                        <td>Price/Earnings</td>
+                        <td>{{ price_earnings }}</td>
+                        
+                    </tr>
+                    <tr>
+                        <td>Price/FCF</td>
+                        <td>{{ price_to_fcf }}</td>
+                    </tr>
+                    <tr>
+                        <td>Profit Margin</td>
+                        <td>{{ profit_margin }}</td>
+                    </tr>
+                    <tr>
+                        <td>Debt to Equity</td>
+                        <td>{{ debt_to_equity }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-3">
+                <h3>Technicals</h3>
+                
             </div>
         </div>
     </div>

@@ -44,7 +44,7 @@ class StockDetail(View):
             bulls_bears_ratio = bulls_num/bears_num
         
         # Get last trade price with datetime
-        self.get_last_trade_data(request, stockinfo.ticker)
+        self.get_last_trade_data(stockinfo.ticker)
         last_trade_price = self.last_trade_data.price
         last_trade_timestamp = self.last_trade_data.participant_timestamp
         last_trade_datetime = datetime.fromtimestamp(last_trade_timestamp/1e9)
@@ -62,9 +62,21 @@ class StockDetail(View):
                     break
 
         previous_day = previous_day.strftime("%Y-%m-%d")
-        self.get_daily_aggs(request, stockinfo.ticker, previous_day, previous_day)
+        self.get_daily_aggs(stockinfo.ticker, previous_day, previous_day)
         last_close = self.aggs[0].close
         daily_perf = Percent(last_trade_price / last_close - 1)
+
+        # Get stock info
+        self.get_stock_info(stockinfo.ticker)
+        price_earnings = round(self.stock_data['trailingPE'], 2)
+        market_cap = self.stock_data['marketCap']
+        free_cash_flow = self.stock_data['freeCashflow']
+        if free_cash_flow is None or free_cash_flow <= 0:
+            price_to_fcf = "-"
+        else:
+            price_to_fcf = round(market_cap / free_cash_flow,2)
+        profit_margin = Percent(self.stock_data['profitMargins'])
+        debt_to_equity = self.stock_data['debtToEquity']/100
 
         return render(
             request,
@@ -80,21 +92,27 @@ class StockDetail(View):
                 "last_trade_price": last_trade_price,
                 "last_trade_datetime": last_trade_datetime,
                 "daily_perf": daily_perf,
+                "price_earnings": price_earnings,
+                "price_to_fcf": price_to_fcf,
+                "profit_margin": profit_margin,
+                "debt_to_equity": debt_to_equity,
             },
         )
 
 
-    def get_last_trade_data(self, request, ticker):
+    def get_last_trade_data(self, ticker):
         client = RESTClient(API_KEY)
 
         self.last_trade_data = client.get_last_trade(ticker, params=None, raw=False)
     
 
-    def get_daily_aggs(self, request, ticker, start_date, end_date):
+    def get_daily_aggs(self, ticker, start_date, end_date):
         client = RESTClient(API_KEY)
 
         self.aggs = client.get_aggs(ticker, 1, "day", start_date, end_date)
 
+    def get_stock_info(self, ticker):
+        self.stock_data = yf.Ticker(ticker).info
         
     def post(self, request, slug, *args, **kwargs):
         """

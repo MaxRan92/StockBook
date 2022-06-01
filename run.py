@@ -65,10 +65,10 @@ def get_daily_aggs(self, request, ticker, start_date, end_date):
     self.aggs = client.get_aggs(ticker, 1, "day", start_date, end_date)
 
 
+
 def test3():
     nyse = mcal.get_calendar('NYSE')
     market_open_days = nyse.valid_days(start_date='2010-12-31', end_date='2030-12-31')
-    
     
     last_trade_datetime = datetime.today()
     print(last_trade_datetime)
@@ -85,6 +85,16 @@ def test3():
                 
 
     
+def test4():
+    ticker = yf.Ticker("GS")
+    stock_data = ticker.info
+    price_earnings = stock_data['trailingPE']
+    market_cap = stock_data['marketCap']
+    profit_margin = stock_data['profitMargins']
+    free_cash_flow = stock_data['freeCashflow']
+    debt_to_equity = stock_data['debtToEquity']
     
+    print(price_earnings, market_cap, free_cash_flow, debt_to_equity, profit_margin)
 
-test3()
+
+test4()
