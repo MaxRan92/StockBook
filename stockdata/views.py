@@ -80,8 +80,8 @@ class StockDetail(View):
         avg_vol = '{:,}'.format(self.stock_data["summaryDetail"]["averageVolume"])
 
         # Financials
-        revenue = self.stock_data["financialData"]["totalRevenue"]
-        income = self.stock_data["defaultKeyStatistics"]["netIncomeToCommon"]
+        revenue = millify(self.stock_data["financialData"]["totalRevenue"])
+        income = millify(self.stock_data["defaultKeyStatistics"]["netIncomeToCommon"])
         dividend_rate = self.stock_data["summaryDetail"]["dividendRate"]
         dividend_yield = self.stock_data["summaryDetail"]["dividendYield"]
         if dividend_rate is None:
