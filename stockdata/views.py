@@ -72,35 +72,35 @@ class StockDetail(View):
         self.get_stock_info(stockinfo.ticker)
 
         # Overview
-        sector = self.stock_data['sector']
-        market_cap = self.stock_data['marketCap']
+        sector = self.stock_data["summaryProfile"]["sector"]
+        market_cap = self.stock_data["price"]["marketCap"]
         market_cap_formatted = millify(market_cap)
-        high_52w = self.stock_data['fiftyTwoWeekHigh']
-        low_52w = self.stock_data['fiftyTwoWeekLow'] 
-        avg_vol = '{:,}'.format(self.stock_data['averageVolume'])
+        high_52w = self.stock_data["summaryDetail"]["fiftyTwoWeekHigh"]
+        low_52w = self.stock_data["summaryDetail"]["fiftyTwoWeekLow"]
+        avg_vol = '{:,}'.format(self.stock_data["summaryDetail"]["averageVolume"])
 
         # Financials
-        revenue = self.stock_data['totalRevenue']
-        income = self.stock_data['netIncomeToCommon']
-        dividend_rate = self.stock_data['dividendRate']
-        dividend_yield = self.stock_data['dividendYield']
+        revenue = self.stock_data["financialData"]["totalRevenue"]
+        income = self.stock_data["defaultKeyStatistics"]["netIncomeToCommon"]
+        dividend_rate = self.stock_data["summaryDetail"]["dividendRate"]
+        dividend_yield = self.stock_data["summaryDetail"]["dividendYield"]
         if dividend_rate is None:
             dividend_rate = 0
         if dividend_yield is None:
             dividend_yield = 0
         dividend_rate = round(dividend_rate, 2)
         dividend_yield = Percent(dividend_yield)
-        payout_ratio = Percent(self.stock_data['payoutRatio'])
+        payout_ratio = Percent(self.stock_data["summaryDetail"]["payoutRatio"])
 
         # Multiples
-        price_earnings = round(self.stock_data['trailingPE'], 2)
-        free_cash_flow = self.stock_data['freeCashflow']
+        price_earnings = round(self.stock_data["summaryDetail"]['trailingPE'], 2)
+        free_cash_flow = self.stock_data["financialData"]['freeCashflow']
         if free_cash_flow is None or free_cash_flow <= 0:
             price_to_fcf = "-"
         else:
             price_to_fcf = round(market_cap / free_cash_flow,2)
-        profit_margin = Percent(self.stock_data['profitMargins'])
-        debt_to_equity = round(self.stock_data['debtToEquity']/100,2)
+        profit_margin = Percent(self.stock_data["defaultKeyStatistics"]['profitMargins'])
+        debt_to_equity = round(self.stock_data["financialData"]['debtToEquity']/100,2)
 
         return render(
             request,
@@ -146,7 +146,7 @@ class StockDetail(View):
         self.aggs = client.get_aggs(ticker, 1, "day", start_date, end_date)
 
     def get_stock_info(self, ticker):
-        self.stock_data = yf.Ticker(ticker).info
+        self.stock_data = yf.Ticker(ticker).stats()
         
     def post(self, request, slug, *args, **kwargs):
         """

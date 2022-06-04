@@ -88,9 +88,24 @@ def test3():
 def test4():
     ticker = yf.Ticker("GS")
     stock_data = ticker.stats()
+    
+    stock_price = stock_data["summaryProfile"]["sector"]
+    stock_price = stock_data["price"]["marketCap"]
+    stock_price = stock_data["summaryDetail"]["fiftyTwoWeekHigh"]
+    stock_price = stock_data["summaryDetail"]["fiftyTwoWeekLow"]
+    stock_price = stock_data["summaryDetail"]["averageVolume"]
+    stock_price = stock_data["financialData"]["totalRevenue"]
+    stock_price = stock_data["defaultKeyStatistics"]["netIncomeToCommon"]
+    stock_price = stock_data["summaryDetail"]["dividendRate"]
+    stock_price = stock_data["summaryDetail"]["dividendYield"]
+    stock_price = stock_data["summaryDetail"]["payoutRatio"]
+    stock_price = stock_data["summaryDetail"]["trailingPE"]
+    stock_price = stock_data["financialData"]["freeCashflow"]
+    stock_price = stock_data["defaultKeyStatistics"]["profitMargins"]
+    stock_price = stock_data["financialData"]["debtToEquity"]
 
     
-    print(stock_data)
+    print(stock_price)
 
 
 
