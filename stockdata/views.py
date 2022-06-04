@@ -72,6 +72,7 @@ class StockDetail(View):
         self.get_stock_info(stockinfo.ticker)
 
         # Overview
+        currency = self.stock_data["summaryDetail"]["currency"]
         sector = self.stock_data["summaryProfile"]["sector"]
         market_cap = self.stock_data["price"]["marketCap"]
         market_cap_formatted = millify(market_cap)
@@ -130,6 +131,7 @@ class StockDetail(View):
                 "dividend_rate": dividend_rate,
                 "dividend_yield": dividend_yield,
                 "payout_ratio": payout_ratio,
+                "currency": currency,
             },
         )
 

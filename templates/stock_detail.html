@@ -21,8 +21,8 @@
 
                 <!-- asset title goes in these h1 tags -->
                 <h1 class="asset-title">{{ stockinfo.title }} ({{ stockinfo.ticker }})</h1>
-                <h3>Last Price: <span>{{ last_trade_price }} ({{ daily_perf }})</span></h3>
-                <p>Last Update: <span>{{ last_trade_datetime }}</span></p>
+                <h3>Last Price: <span>{{ last_trade_price }} {{ currency }} ({{ daily_perf }})</span></h3>
+                <p>Currency: {{ currency}} - Last Update: <span>{{ last_trade_datetime }}</span></p>
             </div>
             <div class="col-md-8">
                 <p>{{ stockinfo.description | safe }}</p>
