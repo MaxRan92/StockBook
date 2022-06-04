@@ -71,7 +71,7 @@ class StockDetail(View):
         # Get stock info from YFinance
         self.get_stock_info(stockinfo.ticker)
 
-        #Overview
+        # Overview
         sector = self.stock_data['sector']
         market_cap = self.stock_data['marketCap']
         market_cap_formatted = millify(market_cap)
@@ -79,6 +79,18 @@ class StockDetail(View):
         low_52w = self.stock_data['fiftyTwoWeekLow'] 
         avg_vol = '{:,}'.format(self.stock_data['averageVolume'])
 
+        # Financials
+        revenue = self.stock_data['totalRevenue']
+        income = self.stock_data['netIncomeToCommon']
+        dividend_rate = self.stock_data['dividendRate']
+        dividend_yield = self.stock_data['dividendYield']
+        if dividend_rate is None:
+            dividend_rate = 0
+        if dividend_yield is None:
+            dividend_yield = 0
+        dividend_rate = round(dividend_rate, 2)
+        dividend_yield = Percent(dividend_yield)
+        payout_ratio = Percent(self.stock_data['payoutRatio'])
 
         # Multiples
         price_earnings = round(self.stock_data['trailingPE'], 2)
@@ -113,6 +125,11 @@ class StockDetail(View):
                 "high_52w": high_52w,
                 "low_52w": low_52w,
                 "avg_vol": avg_vol,
+                "revenue": revenue,
+                "income": income,
+                "dividend_rate": dividend_rate,
+                "dividend_yield": dividend_yield,
+                "payout_ratio": payout_ratio,
             },
         )
 

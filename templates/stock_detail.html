@@ -58,7 +58,25 @@
             </div>            
             <div class="col-md-3">
                 <h3>Financials</h3>
-                
+                <table>
+                    <tr>
+                        <td>Revenue</td>
+                        <td>{{ revenue }}</td>
+                        
+                    </tr>
+                    <tr>
+                        <td>Net Income/Loss</td>
+                        <td>{{ income }}</td>
+                    </tr>
+                    <tr>
+                        <td>Dividend Rate</td>
+                        <td>{{ dividend_rate }} ({{ dividend_yield }})</td>
+                    </tr>
+                    <tr>
+                        <td>Payout Ratio</td>
+                        <td>{{ payout_ratio }}</td>
+                    </tr>
+                </table>                
             </div>
             <div class="col-md-3">
                 <h3>Multiples</h3>

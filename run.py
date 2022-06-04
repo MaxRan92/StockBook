@@ -87,14 +87,11 @@ def test3():
     
 def test4():
     ticker = yf.Ticker("GS")
-    stock_data = ticker.info
-    price_earnings = stock_data['trailingPE']
-    market_cap = stock_data['marketCap']
-    profit_margin = stock_data['profitMargins']
-    free_cash_flow = stock_data['freeCashflow']
-    debt_to_equity = stock_data['debtToEquity']
+    stock_data = ticker.stats()
+
     
-    print(price_earnings, market_cap, free_cash_flow, debt_to_equity, profit_margin)
+    print(stock_data)
+
 
 
 test4()
