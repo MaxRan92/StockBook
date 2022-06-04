@@ -35,22 +35,30 @@
     <div class="container">
         <div class="row">
             <div class="col-md-3">
-                <h3>Sentiment</h3>
+                <h3>Overview</h3>
                 <table>
                     <tr>
-                        <td>Bulls</td>
-                        <td>{{ bulls_num }}</td>
+                        <td>Sector</td>
+                        <td>{{ sector }}</td>
                         
                     </tr>
                     <tr>
-                        <td>Bears</td>
-                        <td>{{ bears_num }}</td>
+                        <td>Market Cap</td>
+                        <td>{{ market_cap }}</td>
                     </tr>
                     <tr>
-                        <td>Ratio</td>
-                        <td>{{ bulls_bears_ratio }}</td>
+                        <td>High-Low 52 weeks</td>
+                        <td>({{ high_52w }} - {{ low_52w }})</td>
+                    </tr>
+                    <tr>
+                        <td>Average Volume</td>
+                        <td>{{ avg_vol }} Shs</td>
                     </tr>
                 </table>
+            </div>            
+            <div class="col-md-3">
+                <h3>Financials</h3>
+                
             </div>
             <div class="col-md-3">
                 <h3>Multiples</h3>
@@ -75,8 +83,22 @@
                 </table>
             </div>
             <div class="col-md-3">
-                <h3>Technicals</h3>
-                
+                <h3>Sentiment</h3>
+                <table>
+                    <tr>
+                        <td>Bulls</td>
+                        <td>{{ bulls_num }}</td>
+                        
+                    </tr>
+                    <tr>
+                        <td>Bears</td>
+                        <td>{{ bears_num }}</td>
+                    </tr>
+                    <tr>
+                        <td>Ratio</td>
+                        <td>{{ bulls_bears_ratio }}</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>

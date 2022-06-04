@@ -1,3 +1,4 @@
+import math
 import pandas as pd
 import yfinance as yf
 import pandas_market_calendars as mcal
@@ -18,6 +19,7 @@ from polygon import RESTClient
 
 
 API_KEY = "R7PbrIpBoMRsJuAHnAPrD07XGMgpJy89"
+MILLNAMES = ['',' k',' M',' Bn',' Tn']
 
 
 class StockList(generic.ListView):
@@ -66,10 +68,20 @@ class StockDetail(View):
         last_close = self.aggs[0].close
         daily_perf = Percent(last_trade_price / last_close - 1)
 
-        # Get stock info
+        # Get stock info from YFinance
         self.get_stock_info(stockinfo.ticker)
-        price_earnings = round(self.stock_data['trailingPE'], 2)
+
+        #Overview
+        sector = self.stock_data['sector']
         market_cap = self.stock_data['marketCap']
+        market_cap_formatted = millify(market_cap)
+        high_52w = self.stock_data['fiftyTwoWeekHigh']
+        low_52w = self.stock_data['fiftyTwoWeekLow'] 
+        avg_vol = '{:,}'.format(self.stock_data['averageVolume'])
+
+
+        # Multiples
+        price_earnings = round(self.stock_data['trailingPE'], 2)
         free_cash_flow = self.stock_data['freeCashflow']
         if free_cash_flow is None or free_cash_flow <= 0:
             price_to_fcf = "-"
@@ -96,6 +108,11 @@ class StockDetail(View):
                 "price_to_fcf": price_to_fcf,
                 "profit_margin": profit_margin,
                 "debt_to_equity": debt_to_equity,
+                "sector": sector,
+                "market_cap": market_cap_formatted,
+                "high_52w": high_52w,
+                "low_52w": low_52w,
+                "avg_vol": avg_vol,
             },
         )
 
@@ -169,10 +186,6 @@ class CommentDelete(DeleteView):
     def get_success_url(self, *args, **kwargs):
         return reverse("stock_detail", kwargs={"slug": self.object.stock.slug})
 
-class Percent(float):
-    def __str__(self):
-        return '{:.2%}'.format(self)
-
 
 @method_decorator(login_required, name="dispatch")
 class CommentEdit(UpdateView):
@@ -202,3 +215,17 @@ class CommentEdit(UpdateView):
         """
         return reverse("stock_detail", kwargs={"slug": self.object.stock.slug})
 
+
+class Percent(float):
+    def __str__(self):
+        return '{:.2%}'.format(self)
+
+
+
+# adapted version of code form Janus on StackOverflow https://stackoverflow.com/questions/3154460/python-human-readable-large-numbers
+def millify(n):
+    n = float(n)
+    millidx = max(0,min(len(MILLNAMES)-1,
+                        int(math.floor(0 if n == 0 else math.log10(abs(n))/3))))
+
+    return '{:.2f}{}'.format(n / 10**(3 * millidx), MILLNAMES[millidx])
