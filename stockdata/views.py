@@ -76,7 +76,7 @@ class StockDetail(View):
         else:
             price_to_fcf = round(market_cap / free_cash_flow,2)
         profit_margin = Percent(self.stock_data['profitMargins'])
-        debt_to_equity = self.stock_data['debtToEquity']/100
+        debt_to_equity = round(self.stock_data['debtToEquity']/100,2)
 
         return render(
             request,
