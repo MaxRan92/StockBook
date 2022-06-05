@@ -103,6 +103,10 @@ class StockDetail(View):
         profit_margin = Percent(self.stock_data["defaultKeyStatistics"]['profitMargins'])
         debt_to_equity = round(self.stock_data["financialData"]['debtToEquity']/100,2)
 
+        # Chart Data
+        xValues = [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150]
+        yValues = [7, 8, 8, 9, 9, 9, 10, 11, 14, 14, 15]
+
         return render(
             request,
             "stock_detail.html",
@@ -132,6 +136,8 @@ class StockDetail(View):
                 "dividend_yield": dividend_yield,
                 "payout_ratio": payout_ratio,
                 "currency": currency,
+                "xValues": xValues,
+                "yValues": yValues,
             },
         )
 

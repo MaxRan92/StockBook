@@ -31,6 +31,38 @@
     </div>
 </div>
 
+<div class="chart-area">
+    <div class="container">
+            <canvas id="stock-chart" style="width:75%;height:300px;"></canvas>
+            <script>
+                var xValues = "{{ xValues }}";
+                var yValues = "{{ yValues }}";
+
+                new Chart("stock-chart", {
+                type: "line",
+                data: {
+                    labels: xValues,
+                    responsive:true,
+                    maintainAspectRatio: false,
+                    datasets: [{
+                    fill: false,
+                    lineTension: 0,
+                    backgroundColor: "rgba(0,0,255,1.0)",
+                    borderColor: "rgba(0,0,255,0.1)",
+                    data: yValues
+                    }]
+                },
+                options: {
+                    legend: {display: false},
+                    scales: {
+                    yAxes: [{ticks: {min: 6, max:16}}],
+                    }
+                }
+                });
+            </script>
+    </div>
+</div>
+
 <div class="analysis-area">
     <div class="container">
         <div class="row">
@@ -119,12 +151,6 @@
                 </table>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="chart-area">
-    <div class="container">
-        <canvas id="stock-chart" style="width:75%;height:300px;"></canvas>
     </div>
 </div>
 
