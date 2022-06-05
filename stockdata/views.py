@@ -106,19 +106,8 @@ class StockDetail(View):
         profit_margin = Percent(self.stock_data["defaultKeyStatistics"]['profitMargins'])
         debt_to_equity = round(self.stock_data["financialData"]['debtToEquity']/100,2)
 
-        # Chart Data
-        self.get_daily_aggs(stockinfo.ticker, "day", "2021-12-31", "2022-06-03")
-        trades = self.aggs
-
-        for x in range (0, len(trades)):
-            date_unix_msec = trades[x].timestamp
-            date_converted = datetime.fromtimestamp(date_unix_msec // 1000).date()
-            trades[x].timestamp = str(date_converted)
+        context = self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", previous_day)
         
-        df = pd.DataFrame(trades)
-        dates = df["timestamp"].tolist()
-        prices = df["close"].tolist()
-        context = {"dates": mark_safe(json.dumps(dates)), "prices": mark_safe(json.dumps(prices))}
 
         return render(
             request,
@@ -152,6 +141,28 @@ class StockDetail(View):
                 "context": context,
             },
         )
+
+    def get_chart_data(self, ticker, interval, start_date, end_date):
+        '''
+        Function that get ticker, data interval, start date and end date,
+        retrieves stock data from Polygon API, creates a list of 
+        timestamps and prices, and converts the list to JSON array in order
+        to be rendered in the chart.js
+        '''
+        self.get_daily_aggs(ticker, interval, start_date, end_date)
+        trades = self.aggs
+
+        for x in range (0, len(trades)):
+            date_unix_msec = trades[x].timestamp
+            date_converted = datetime.fromtimestamp(date_unix_msec // 1000).date()
+            trades[x].timestamp = str(date_converted)
+        
+        df = pd.DataFrame(trades)
+        dates = df["timestamp"].tolist()
+        prices = df["close"].tolist()
+        context = {"dates": mark_safe(json.dumps(dates)), "prices": mark_safe(json.dumps(prices))}
+
+        return context
 
 
     def get_last_trade_data(self, ticker):
