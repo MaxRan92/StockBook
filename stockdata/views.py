@@ -176,7 +176,6 @@ class StockDetail(View):
         queryset = StockInfo.objects.filter(status=1)
         stockinfo = get_object_or_404(queryset, slug=slug)
         comments = stockinfo.comments.filter(approved=True).order_by('-created_on')
-
         
         comment_form = CommentForm(data=request.POST)
 
@@ -185,6 +184,7 @@ class StockDetail(View):
             comment_form.instance.name = request.user.username
             comment = comment_form.save(commit=False)
             comment.stock = stockinfo
+            comment.approved = True
             comment.save()
         else:
             comment_form = CommentForm()
