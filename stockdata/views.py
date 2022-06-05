@@ -2,6 +2,7 @@ import math
 import pandas as pd
 import yfinance as yf
 import pandas_market_calendars as mcal
+from stockbook.settings import POLYGON_API_KEY as API_KEY
 from flask import url_for, render_template
 from datetime import datetime, timedelta
 from django.shortcuts import render, get_object_or_404, redirect
@@ -18,7 +19,7 @@ from .forms import CommentForm, EditForm
 from polygon import RESTClient
 
 
-API_KEY = "R7PbrIpBoMRsJuAHnAPrD07XGMgpJy89"
+
 MILLNAMES = ['',' k',' M',' Bn',' Tn']
 
 
@@ -64,7 +65,7 @@ class StockDetail(View):
                     break
 
         previous_day = previous_day.strftime("%Y-%m-%d")
-        self.get_daily_aggs(stockinfo.ticker, previous_day, previous_day)
+        self.get_daily_aggs(stockinfo.ticker, "day", previous_day, previous_day)
         last_close = self.aggs[0].close
         daily_perf = Percent(last_trade_price / last_close - 1)
 
@@ -104,8 +105,17 @@ class StockDetail(View):
         debt_to_equity = round(self.stock_data["financialData"]['debtToEquity']/100,2)
 
         # Chart Data
-        xValues = [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150]
-        yValues = [7, 8, 8, 9, 9, 9, 10, 11, 14, 14, 15]
+        self.get_daily_aggs(stockinfo.ticker, "day", "2021-12-31", "2022-06-03")
+        trades = self.aggs
+
+        for x in range (0, len(trades)):
+            date_unix_msec = trades[x].timestamp
+            date_converted = datetime.fromtimestamp(date_unix_msec // 1000).strftime("%Y-%m-%d")
+            trades[x].timestamp = date_converted
+        
+        df = pd.DataFrame(trades)
+        xValues = df["timestamp"].tolist()
+        yValues = df["close"].tolist()
 
         return render(
             request,
@@ -148,10 +158,11 @@ class StockDetail(View):
         self.last_trade_data = client.get_last_trade(ticker, params=None, raw=False)
     
 
-    def get_daily_aggs(self, ticker, start_date, end_date):
+    def get_daily_aggs(self, ticker, timespan, start_date, end_date):
         client = RESTClient(API_KEY)
 
-        self.aggs = client.get_aggs(ticker, 1, "day", start_date, end_date)
+        self.aggs = client.get_aggs(ticker, 1, timespan, start_date, end_date)
+
 
     def get_stock_info(self, ticker):
         self.stock_data = yf.Ticker(ticker).stats()

@@ -38,6 +38,9 @@
                 var xValues = "{{ xValues }}";
                 var yValues = "{{ yValues }}";
 
+                console.log(xValues);
+                console.log(yValues)
+
                 new Chart("stock-chart", {
                 type: "line",
                 data: {
@@ -54,9 +57,7 @@
                 },
                 options: {
                     legend: {display: false},
-                    scales: {
-                    yAxes: [{ticks: {min: 6, max:16}}],
-                    }
+                    scales: {}
                 }
                 });
             </script>

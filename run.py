@@ -1,5 +1,6 @@
 import pandas as pd
 import yfinance as yf
+from stockbook.settings import POLYGON_API_KEY as API_KEY
 import plotly.graph_objects as go
 from polygon import RESTClient
 from typing import cast
@@ -31,8 +32,6 @@ def polygon_data():
 
 
 
-API_KEY = "R7PbrIpBoMRsJuAHnAPrD07XGMgpJy89"
-
 def test():
 
         client = RESTClient(API_KEY)
@@ -45,20 +44,74 @@ def test():
         print(last_trade_price)
         
 
-
-
-
-
 def get_last_trade_data():
     client = RESTClient(API_KEY)
-    ticker = "GS"
+    ticker = "AAPL"
+    start_date = "2022-06-01"
+    end_date = "2022-06-03"
 
-    trades = client.get_aggs(ticker, multiplier=1, timespan="day", from_="2021-12-31", to="2022-06-03", adjusted=True, sort="asc", limit=None, params=None, raw=False)
+    trades = client.get_aggs(ticker, 1, "day", start_date, end_date)
+    date = trades[0].timestamp
+    date = datetime.fromtimestamp(date // 1000)
+
+    for x in range (0, len(trades)):
+        date_unix_msec = trades[x].timestamp
+        date_converted = datetime.fromtimestamp(date_unix_msec // 1000).strftime("%Y-%m-%d")
+        trades[x].timestamp = date_converted
 
     df = pd.DataFrame(trades)
     print(df)
 
+
+
+    '''
+
+    df = pd.DataFrame(trades)
+    df['timestamp'] = datetime.fromtimestamp(df['timestamp'] // 1000)
+    
+    print(df["open"])
+    print(df["timestamp"])
+
+
+    
+
+
+    print(len(trades))
+    for x in range (0, len(trades)):
+        print(trades[x].timestamp.strftime("%d.%m.%y %H:%M:%S"))
+    
+
+
+    df = pd.DataFrame(trades)
+    df['timestamp'] = datetime.fromtimestamp(df['timestamp'] / 1e9)
+    
+    print(df["open"])
+    print(df["timestamp"])
+
+
+    
+    print(datetime.fromtimestamp(timelist[0]).strftime('%Y-%m-%d'))
+
+    
+    for x in timelist:
+        x = datetime.fromtimestamp(x/1e9)
+    
+
+    
+    for x in df:
+        df[x] = datetime.fromtimestamp(df[x]/1e9)
+        df[x] = df[x].strftime("%Y-%m-%d")
+    '''
+
+
 get_last_trade_data()
+
+
+def get_daily_aggs(self, ticker, timespan, start_date, end_date):
+    client = RESTClient(API_KEY)
+
+    self.aggs = client.get_aggs(ticker, 1, timespan, start_date, end_date)
+
 
 
 def get_daily_aggs(self, request, ticker, start_date, end_date):
