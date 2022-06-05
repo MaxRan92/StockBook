@@ -221,6 +221,11 @@ class StockDetail(View):
         else:
             comment_form = CommentForm()
 
+        self.sentiment_analysis(stockinfo)
+        self.get_polygon_last_trade(stockinfo.ticker)
+        self.get_yfinance_figures(stockinfo.ticker)
+        context = self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", self.previous_day)
+
         return render(
             request,
             "stock_detail.html",
@@ -229,6 +234,28 @@ class StockDetail(View):
                 "comments": comments,
                 "commented": True,
                 "comment_form": CommentForm,
+                "bulls_num": self.bulls_num,
+                "bears_num": self.bears_num,
+                "bulls_bears_ratio": self.bulls_bears_ratio,
+                "last_trade_price": self.last_trade_price,
+                "last_trade_datetime": self.last_trade_datetime,
+                "daily_perf": self.daily_perf,
+                "price_earnings": self.price_earnings,
+                "price_to_fcf": self.price_to_fcf,
+                "profit_margin": self.profit_margin,
+                "debt_to_equity": self.debt_to_equity,
+                "sector": self.sector,
+                "market_cap": self.market_cap_formatted,
+                "high_52w": self.high_52w,
+                "low_52w": self.low_52w,
+                "avg_vol": self.avg_vol,
+                "revenue": self.revenue,
+                "income": self.income,
+                "dividend_rate": self.dividend_rate,
+                "dividend_yield": self.dividend_yield,
+                "payout_ratio": self.payout_ratio,
+                "currency": self.currency,
+                "context": self.context,
             },
         )
 
