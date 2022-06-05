@@ -34,6 +34,8 @@ class StockList(generic.ListView):
 
 class StockDetail(View):
 
+    comment_edited = False
+
 
     def get(self, request, slug, *args, **kwargs):
         queryset = StockInfo.objects.filter(status=1)
@@ -44,7 +46,15 @@ class StockDetail(View):
         self.sentiment_analysis(stockinfo)
         self.get_polygon_last_trade(stockinfo.ticker)
         self.get_yfinance_figures(stockinfo.ticker)
-        context = self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", self.previous_day)
+        self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", self.previous_day)
+
+        self.comment_edited_var = False
+        if self.comment_edited == True:
+            self.comment_edited_var = True
+            StockDetail.comment_edited = False
+        else:
+            self.comment_edited_var = False
+
 
         return render(
             request,
@@ -54,6 +64,7 @@ class StockDetail(View):
                 "comments": comments,
                 "commented": False,
                 "comment_form": CommentForm,
+                "comment_edited": self.comment_edited_var,
                 "bulls_num": self.bulls_num,
                 "bears_num": self.bears_num,
                 "bulls_bears_ratio": self.bulls_bears_ratio,
@@ -78,6 +89,8 @@ class StockDetail(View):
                 "context": self.context,
             },
         )
+
+        
 
     def sentiment_analysis(self, stockinfo):
         '''
@@ -224,7 +237,7 @@ class StockDetail(View):
         self.sentiment_analysis(stockinfo)
         self.get_polygon_last_trade(stockinfo.ticker)
         self.get_yfinance_figures(stockinfo.ticker)
-        context = self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", self.previous_day)
+        self.context = self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", self.previous_day)
 
         return render(
             request,
@@ -259,11 +272,6 @@ class StockDetail(View):
             },
         )
 
-
-def update_comment(UpdateView):
-    model = Comment
-    template_name = 'update_comment.html'
-    success_url = reverse_lazy("")
 
 @method_decorator(login_required, name="dispatch")
 class CommentDelete(DeleteView):
@@ -303,7 +311,6 @@ class CommentEdit(UpdateView):
         """
         Upon success prompt the user with a success message.
         """
-        messages.success(self.request, "Edit made!")
         super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())
 
@@ -311,6 +318,7 @@ class CommentEdit(UpdateView):
         """
         Upon success returns user to the stock detail page.
         """
+        StockDetail.comment_edited = True
         return reverse("stock_detail", kwargs={"slug": self.object.stock.slug})
 
 
