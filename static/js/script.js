@@ -3,11 +3,28 @@
  * DOM elements of interest
  */
  
-const submitButton = document.getElementById("submit-button");
 
-submitButton.addEventListener('click', function(e) {
-    e.preventDefault();
-    console.log("test");
+var xValues = [50,60,70,80,90,100,110,120,130,140,150];
+var yValues = [7,8,8,9,9,9,10,11,14,14,15];
+
+new Chart("stock-chart", {
+  type: "line",
+  data: {
+    labels: xValues,
+    responsive:true,
+    maintainAspectRatio: false,
+    datasets: [{
+      fill: false,
+      lineTension: 0,
+      backgroundColor: "rgba(0,0,255,1.0)",
+      borderColor: "rgba(0,0,255,0.1)",
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      yAxes: [{ticks: {min: 6, max:16}}],
+    }
+  }
 });
-
-

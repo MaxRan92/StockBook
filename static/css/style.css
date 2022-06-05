@@ -133,3 +133,9 @@ footer h3 {
 footer hr {
     border-top: 3px solid
 }
+
+/* chart */
+
+.chart {
+    max-height: 33%;
+}
