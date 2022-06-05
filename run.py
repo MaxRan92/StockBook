@@ -1,5 +1,6 @@
 import pandas as pd
 import yfinance as yf
+import plotly.graph_objects as go
 from polygon import RESTClient
 from typing import cast
 from urllib3 import HTTPResponse
@@ -52,11 +53,12 @@ def get_last_trade_data():
     client = RESTClient(API_KEY)
     ticker = "AAPL"
 
-    aggs = client.get_aggs(ticker, 1, "day", "2022-05-29", "2022-05-29")
+    trades = []
+    for t in client.list_trades(ticker, "2022-04-04", limit=5):
+        trades.append(t)
+    print(trades)
 
-    print(aggs)
-
-
+get_last_trade_data()
 
 
 def get_daily_aggs(self, request, ticker, start_date, end_date):
@@ -108,5 +110,34 @@ def test4():
     print(stock_price)
 
 
+def test5():
+    timeseries = yf.download(tickers = "PANL",
+        # use "period" instead of start/end
+        # valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
+        # (optional, default is '1mo')
+        period = "ytd",
 
-test4()
+        # fetch data by interval (including intraday if period < 60 days)
+        # valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo
+        # (optional, default is '1d')
+        interval = "1d",
+
+        # adjust all OHLC automatically
+        # (optional, default is False)
+        auto_adjust = True,
+
+        # download pre/post regular market hours data
+        # (optional, default is False)
+        prepost = True,
+    )
+
+    timeseries = timeseries.reset_index()
+    timeseries.rename(columns={timeseries.columns[0]:"Date"}, inplace = True)
+    print(timeseries)
+
+    fig = px.line(timeseries, x="Date", y="Open")
+
+    fig.layout = dict(xaxis=dict(type="category"))
+
+    fig.show()
+
