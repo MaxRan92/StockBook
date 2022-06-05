@@ -1,4 +1,5 @@
 import math
+import json
 import pandas as pd
 import yfinance as yf
 import pandas_market_calendars as mcal
@@ -12,6 +13,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.views.generic import DeleteView, UpdateView
 from django.utils.decorators import method_decorator
+from django.utils.safestring import mark_safe
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from .models import StockInfo, Comment
@@ -110,12 +112,13 @@ class StockDetail(View):
 
         for x in range (0, len(trades)):
             date_unix_msec = trades[x].timestamp
-            date_converted = datetime.fromtimestamp(date_unix_msec // 1000).strftime("%Y-%m-%d")
-            trades[x].timestamp = date_converted
+            date_converted = datetime.fromtimestamp(date_unix_msec // 1000).date()
+            trades[x].timestamp = str(date_converted)
         
         df = pd.DataFrame(trades)
-        xValues = df["timestamp"].tolist()
-        yValues = df["close"].tolist()
+        dates = df["timestamp"].tolist()
+        prices = df["close"].tolist()
+        context = {"dates": mark_safe(json.dumps(dates)), "prices": mark_safe(json.dumps(prices))}
 
         return render(
             request,
@@ -146,8 +149,7 @@ class StockDetail(View):
                 "dividend_yield": dividend_yield,
                 "payout_ratio": payout_ratio,
                 "currency": currency,
-                "xValues": xValues,
-                "yValues": yValues,
+                "context": context,
             },
         )
 
@@ -197,6 +199,7 @@ class StockDetail(View):
                 "comment_form": CommentForm,
             },
         )
+
 
 def update_comment(UpdateView):
     model = Comment

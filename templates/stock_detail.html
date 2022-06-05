@@ -35,11 +35,12 @@
     <div class="container">
             <canvas id="stock-chart" style="width:75%;height:300px;"></canvas>
             <script>
-                var xValues = "{{ xValues }}";
-                var yValues = "{{ yValues }}";
+                var xValues = JSON.parse('{{context.dates}}');
+                var yValues = JSON.parse('{{context.prices}}');
+                
 
                 console.log(xValues);
-                console.log(yValues)
+                console.log(yValues);
 
                 new Chart("stock-chart", {
                 type: "line",
@@ -57,7 +58,22 @@
                 },
                 options: {
                     legend: {display: false},
-                    scales: {}
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                            min: 0,
+                            max: 200,
+                            stepSize: 10, 
+                            }
+                        }],
+                        xAxes: [{
+                            type: 'time',
+                            time: {
+                            unit: 'day',
+                            tooltipFormat: 'YYYY MMM DD'
+                            }
+                        }],
+                    }
                 }
                 });
             </script>
