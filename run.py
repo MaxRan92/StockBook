@@ -51,12 +51,12 @@ def test():
 
 def get_last_trade_data():
     client = RESTClient(API_KEY)
-    ticker = "AAPL"
+    ticker = "GS"
 
-    trades = []
-    for t in client.list_trades(ticker, "2022-04-04", limit=5):
-        trades.append(t)
-    print(trades)
+    trades = client.get_aggs(ticker, multiplier=1, timespan="day", from_="2021-12-31", to="2022-06-03", adjusted=True, sort="asc", limit=None, params=None, raw=False)
+
+    df = pd.DataFrame(trades)
+    print(df)
 
 get_last_trade_data()
 
@@ -65,6 +65,8 @@ def get_daily_aggs(self, request, ticker, start_date, end_date):
     client = RESTClient(API_KEY)
 
     self.aggs = client.get_aggs(ticker, 1, "day", start_date, end_date)
+
+    
 
 
 
