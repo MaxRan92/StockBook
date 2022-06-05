@@ -80,6 +80,10 @@ class StockDetail(View):
         )
 
     def sentiment_analysis(self, stockinfo):
+        '''
+        Function that counts the number of bull and bear sentiment
+        expressed by the users and calculates a bull to bear ratio
+        '''
         self.bulls_num = len(stockinfo.comments.filter(sentiment='BULL', approved=True).order_by('-created_on'))
         self.bears_num = len(stockinfo.comments.filter(sentiment='BEAR', approved=True).order_by('-created_on'))
         if self.bulls_num == 0 or self.bears_num == 0:
