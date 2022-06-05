@@ -71,8 +71,51 @@ class StockDetail(View):
         last_close = self.aggs[0].close
         daily_perf = Percent(last_trade_price / last_close - 1)
 
+        yfinance_dict = self.get_yfinance_data(stockinfo.ticker)
+        context = self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", previous_day)
+
+        return render(
+            request,
+            "stock_detail.html",
+            {
+                "stockinfo": stockinfo,
+                "comments": comments,
+                "commented": False,
+                "comment_form": CommentForm,
+                "bulls_num": bulls_num,
+                "bears_num": bears_num,
+                "bulls_bears_ratio": bulls_bears_ratio,
+                "last_trade_price": last_trade_price,
+                "last_trade_datetime": last_trade_datetime,
+                "daily_perf": daily_perf,
+                "price_earnings": yfinance_dict["price_earnings"],
+                "price_to_fcf": yfinance_dict["price_to_fcf"],
+                "profit_margin": yfinance_dict["profit_margin"],
+                "debt_to_equity": yfinance_dict["debt_to_equity"],
+                "sector": yfinance_dict["sector"],
+                "market_cap": yfinance_dict["market_cap"],
+                "high_52w": yfinance_dict["high_52w"],
+                "low_52w": yfinance_dict["low_52w"],
+                "avg_vol": yfinance_dict["avg_vol"],
+                "revenue": yfinance_dict["revenue"],
+                "income": yfinance_dict["income"],
+                "dividend_rate": yfinance_dict["dividend_rate"],
+                "dividend_yield": yfinance_dict["dividend_yield"],
+                "payout_ratio": yfinance_dict["payout_ratio"],
+                "currency": yfinance_dict["currency"],
+                "context": context,
+            },
+        )
+
+
+    def get_yfinance_data(self, ticker):
+        '''
+        Function that takes ticker, retrieves stock data from yfinance library, 
+        and populates a list of variables used for Overview, Financials and Fundamental 
+        data
+        '''
         # Get stock info from YFinance
-        self.get_stock_info(stockinfo.ticker)
+        self.get_stock_info(ticker)
 
         # Overview
         currency = self.stock_data["summaryDetail"]["currency"]
@@ -106,41 +149,26 @@ class StockDetail(View):
         profit_margin = Percent(self.stock_data["defaultKeyStatistics"]['profitMargins'])
         debt_to_equity = round(self.stock_data["financialData"]['debtToEquity']/100,2)
 
-        context = self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", previous_day)
-        
+        yfinance_dict = {
+            "currency": currency,
+            "sector": sector,
+            "market_cap": market_cap_formatted,
+            "high_52w": high_52w,
+            "low_52w": low_52w,
+            "avg_vol": avg_vol,
+            "revenue": revenue,
+            "income": income,
+            "dividend_rate": dividend_rate,
+            "dividend_yield": dividend_yield,
+            "payout_ratio": payout_ratio,
+            "price_earnings": price_earnings,
+            "price_to_fcf": price_to_fcf,
+            "profit_margin": profit_margin,
+            "debt_to_equity": debt_to_equity,
+        }
 
-        return render(
-            request,
-            "stock_detail.html",
-            {
-                "stockinfo": stockinfo,
-                "comments": comments,
-                "commented": False,
-                "comment_form": CommentForm,
-                "bulls_num": bulls_num,
-                "bears_num": bears_num,
-                "bulls_bears_ratio": bulls_bears_ratio,
-                "last_trade_price": last_trade_price,
-                "last_trade_datetime": last_trade_datetime,
-                "daily_perf": daily_perf,
-                "price_earnings": price_earnings,
-                "price_to_fcf": price_to_fcf,
-                "profit_margin": profit_margin,
-                "debt_to_equity": debt_to_equity,
-                "sector": sector,
-                "market_cap": market_cap_formatted,
-                "high_52w": high_52w,
-                "low_52w": low_52w,
-                "avg_vol": avg_vol,
-                "revenue": revenue,
-                "income": income,
-                "dividend_rate": dividend_rate,
-                "dividend_yield": dividend_yield,
-                "payout_ratio": payout_ratio,
-                "currency": currency,
-                "context": context,
-            },
-        )
+        return yfinance_dict
+
 
     def get_chart_data(self, ticker, interval, start_date, end_date):
         '''
