@@ -34,19 +34,22 @@ class StockList(generic.ListView):
 
 class StockDetail(View):
 
+    def __init__(self):
+        """
+        Setting main parameters
+        """
+        self.bulls_num = ""
+        self.bears_num = ""
+        self.bulls_bears_ratio = ""
+
     def get(self, request, slug, *args, **kwargs):
         queryset = StockInfo.objects.filter(status=1)
         stockinfo = get_object_or_404(queryset, slug=slug)
         all_comments = Comment.objects.filter(approved=True)
         comments = stockinfo.comments.filter(approved=True).order_by('-created_on')
         
-        #CAN WE REFACTOR THIS?
-        bulls_num = len(stockinfo.comments.filter(sentiment='BULL', approved=True).order_by('-created_on'))
-        bears_num = len(stockinfo.comments.filter(sentiment='BEAR', approved=True).order_by('-created_on'))
-        if bulls_num == 0 or bears_num == 0:
-            bulls_bears_ratio = "N/A"
-        else:
-            bulls_bears_ratio = bulls_num/bears_num
+        self.sentiment_analysis(stockinfo)
+        
 
         last_trade_dict = self.get_polygon_last_trade(stockinfo.ticker)
         figures_dict = self.get_yfinance_figures(stockinfo.ticker)
@@ -60,9 +63,9 @@ class StockDetail(View):
                 "comments": comments,
                 "commented": False,
                 "comment_form": CommentForm,
-                "bulls_num": bulls_num,
-                "bears_num": bears_num,
-                "bulls_bears_ratio": bulls_bears_ratio,
+                "bulls_num": self.bulls_num,
+                "bears_num": self.bears_num,
+                "bulls_bears_ratio": self.bulls_bears_ratio,
                 "last_trade_price": last_trade_dict["last_trade_price"],
                 "last_trade_datetime": last_trade_dict["last_trade_datetime"],
                 "daily_perf": last_trade_dict["daily_perf"],
@@ -84,6 +87,15 @@ class StockDetail(View):
                 "context": context,
             },
         )
+
+    def sentiment_analysis(self, stockinfo):
+        self.bulls_num = len(stockinfo.comments.filter(sentiment='BULL', approved=True).order_by('-created_on'))
+        self.bears_num = len(stockinfo.comments.filter(sentiment='BEAR', approved=True).order_by('-created_on'))
+        if self.bulls_num == 0 or self.bears_num == 0:
+            self.bulls_bears_ratio = "N/A"
+        else:
+            self.bulls_bears_ratio = self.bulls_num/self.bears_num
+        
 
     def get_polygon_last_trade(self, ticker):
         '''
