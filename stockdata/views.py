@@ -35,6 +35,7 @@ class StockList(generic.ListView):
 class StockDetail(View):
 
     comment_edited = False
+    comment_deleted = False
 
 
     def get(self, request, slug, *args, **kwargs):
@@ -49,11 +50,19 @@ class StockDetail(View):
         self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", self.previous_day)
 
         self.comment_edited_var = False
+        self.comment_deleted_var = False
+
         if self.comment_edited == True:
             self.comment_edited_var = True
             StockDetail.comment_edited = False
         else:
             self.comment_edited_var = False
+        
+        if self.comment_deleted == True:
+            self.comment_deleted_var = True
+            StockDetail.comment_deleted = False
+        else:
+            self.comment_deleted_var = False
 
 
         return render(
@@ -65,6 +74,7 @@ class StockDetail(View):
                 "commented": False,
                 "comment_form": CommentForm,
                 "comment_edited": self.comment_edited_var,
+                "comment_deleted": self.comment_deleted_var,
                 "bulls_num": self.bulls_num,
                 "bears_num": self.bears_num,
                 "bulls_bears_ratio": self.bulls_bears_ratio,
@@ -290,6 +300,7 @@ class CommentDelete(DeleteView):
         return super(CommentDelete, self).delete(request, *args, **kwargs)
 
     def get_success_url(self, *args, **kwargs):
+        StockDetail.comment_deleted = True
         return reverse("stock_detail", kwargs={"slug": self.object.stock.slug})
 
 

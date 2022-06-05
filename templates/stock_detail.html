@@ -225,11 +225,15 @@
                 <div>
                     {% if commented %}
                     <div class="alert alert-success" role="alert">
-                        Your comment has been posted
+                        Your comment has been successfully posted
                     </div>
                     {% elif comment_edited %}
                     <div class="alert alert-success" role="alert">
-                        Your comment has been edited
+                        Your comment has been successfully edited
+                    </div>
+                    {% elif comment_deleted %}
+                    <div class="alert alert-success" role="alert">
+                        Your comment has been successfully deleted
                     </div>
                     {% endif %}
                     
