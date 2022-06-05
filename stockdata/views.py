@@ -47,9 +47,52 @@ class StockDetail(View):
             bulls_bears_ratio = "N/A"
         else:
             bulls_bears_ratio = bulls_num/bears_num
-        
-        # Get last trade price with datetime
-        self.get_last_trade_data(stockinfo.ticker)
+
+        last_trade_dict = self.get_polygon_last_trade(stockinfo.ticker)
+        figures_dict = self.get_yfinance_figures(stockinfo.ticker)
+        context = self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", last_trade_dict["previous_day"])
+
+        return render(
+            request,
+            "stock_detail.html",
+            {
+                "stockinfo": stockinfo,
+                "comments": comments,
+                "commented": False,
+                "comment_form": CommentForm,
+                "bulls_num": bulls_num,
+                "bears_num": bears_num,
+                "bulls_bears_ratio": bulls_bears_ratio,
+                "last_trade_price": last_trade_dict["last_trade_price"],
+                "last_trade_datetime": last_trade_dict["last_trade_datetime"],
+                "daily_perf": last_trade_dict["daily_perf"],
+                "price_earnings": figures_dict["price_earnings"],
+                "price_to_fcf": figures_dict["price_to_fcf"],
+                "profit_margin": figures_dict["profit_margin"],
+                "debt_to_equity": figures_dict["debt_to_equity"],
+                "sector": figures_dict["sector"],
+                "market_cap": figures_dict["market_cap"],
+                "high_52w": figures_dict["high_52w"],
+                "low_52w": figures_dict["low_52w"],
+                "avg_vol": figures_dict["avg_vol"],
+                "revenue": figures_dict["revenue"],
+                "income": figures_dict["income"],
+                "dividend_rate": figures_dict["dividend_rate"],
+                "dividend_yield": figures_dict["dividend_yield"],
+                "payout_ratio": figures_dict["payout_ratio"],
+                "currency": figures_dict["currency"],
+                "context": context,
+            },
+        )
+
+    def get_polygon_last_trade(self, ticker):
+        '''
+        Function that takes ticker, retrieves stock trade data from polygon API, 
+        in order to get the last trade price, the linked timestamp and the daily
+        performance relative to previous close
+        '''
+         # Get last trade price with datetime
+        self.get_last_trade_data(ticker)
         last_trade_price = self.last_trade_data.price
         last_trade_timestamp = self.last_trade_data.participant_timestamp
         last_trade_datetime = datetime.fromtimestamp(last_trade_timestamp/1e9)
@@ -67,48 +110,20 @@ class StockDetail(View):
                     break
 
         previous_day = previous_day.strftime("%Y-%m-%d")
-        self.get_daily_aggs(stockinfo.ticker, "day", previous_day, previous_day)
+        self.get_daily_aggs(ticker, "day", previous_day, previous_day)
         last_close = self.aggs[0].close
         daily_perf = Percent(last_trade_price / last_close - 1)
+        
+        last_trade_dict = {
+            "last_trade_price": last_trade_price,
+            "last_trade_datetime": last_trade_datetime,
+            "daily_perf": daily_perf,
+            "previous_day": previous_day,
+        }
 
-        yfinance_dict = self.get_yfinance_data(stockinfo.ticker)
-        context = self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", previous_day)
+        return last_trade_dict
 
-        return render(
-            request,
-            "stock_detail.html",
-            {
-                "stockinfo": stockinfo,
-                "comments": comments,
-                "commented": False,
-                "comment_form": CommentForm,
-                "bulls_num": bulls_num,
-                "bears_num": bears_num,
-                "bulls_bears_ratio": bulls_bears_ratio,
-                "last_trade_price": last_trade_price,
-                "last_trade_datetime": last_trade_datetime,
-                "daily_perf": daily_perf,
-                "price_earnings": yfinance_dict["price_earnings"],
-                "price_to_fcf": yfinance_dict["price_to_fcf"],
-                "profit_margin": yfinance_dict["profit_margin"],
-                "debt_to_equity": yfinance_dict["debt_to_equity"],
-                "sector": yfinance_dict["sector"],
-                "market_cap": yfinance_dict["market_cap"],
-                "high_52w": yfinance_dict["high_52w"],
-                "low_52w": yfinance_dict["low_52w"],
-                "avg_vol": yfinance_dict["avg_vol"],
-                "revenue": yfinance_dict["revenue"],
-                "income": yfinance_dict["income"],
-                "dividend_rate": yfinance_dict["dividend_rate"],
-                "dividend_yield": yfinance_dict["dividend_yield"],
-                "payout_ratio": yfinance_dict["payout_ratio"],
-                "currency": yfinance_dict["currency"],
-                "context": context,
-            },
-        )
-
-
-    def get_yfinance_data(self, ticker):
+    def get_yfinance_figures(self, ticker):
         '''
         Function that takes ticker, retrieves stock data from yfinance library, 
         and populates a list of variables used for Overview, Financials and Fundamental 
@@ -149,7 +164,7 @@ class StockDetail(View):
         profit_margin = Percent(self.stock_data["defaultKeyStatistics"]['profitMargins'])
         debt_to_equity = round(self.stock_data["financialData"]['debtToEquity']/100,2)
 
-        yfinance_dict = {
+        figures_dict = {
             "currency": currency,
             "sector": sector,
             "market_cap": market_cap_formatted,
@@ -167,7 +182,7 @@ class StockDetail(View):
             "debt_to_equity": debt_to_equity,
         }
 
-        return yfinance_dict
+        return figures_dict
 
 
     def get_chart_data(self, ticker, interval, start_date, end_date):
