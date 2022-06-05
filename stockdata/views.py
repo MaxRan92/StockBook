@@ -34,13 +34,6 @@ class StockList(generic.ListView):
 
 class StockDetail(View):
 
-    def __init__(self):
-        """
-        Setting main parameters
-        """
-        self.bulls_num = ""
-        self.bears_num = ""
-        self.bulls_bears_ratio = ""
 
     def get(self, request, slug, *args, **kwargs):
         queryset = StockInfo.objects.filter(status=1)
@@ -49,11 +42,9 @@ class StockDetail(View):
         comments = stockinfo.comments.filter(approved=True).order_by('-created_on')
         
         self.sentiment_analysis(stockinfo)
-        
-
-        last_trade_dict = self.get_polygon_last_trade(stockinfo.ticker)
-        figures_dict = self.get_yfinance_figures(stockinfo.ticker)
-        context = self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", last_trade_dict["previous_day"])
+        self.get_polygon_last_trade(stockinfo.ticker)
+        self.get_yfinance_figures(stockinfo.ticker)
+        context = self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", self.previous_day)
 
         return render(
             request,
@@ -66,25 +57,25 @@ class StockDetail(View):
                 "bulls_num": self.bulls_num,
                 "bears_num": self.bears_num,
                 "bulls_bears_ratio": self.bulls_bears_ratio,
-                "last_trade_price": last_trade_dict["last_trade_price"],
-                "last_trade_datetime": last_trade_dict["last_trade_datetime"],
-                "daily_perf": last_trade_dict["daily_perf"],
-                "price_earnings": figures_dict["price_earnings"],
-                "price_to_fcf": figures_dict["price_to_fcf"],
-                "profit_margin": figures_dict["profit_margin"],
-                "debt_to_equity": figures_dict["debt_to_equity"],
-                "sector": figures_dict["sector"],
-                "market_cap": figures_dict["market_cap"],
-                "high_52w": figures_dict["high_52w"],
-                "low_52w": figures_dict["low_52w"],
-                "avg_vol": figures_dict["avg_vol"],
-                "revenue": figures_dict["revenue"],
-                "income": figures_dict["income"],
-                "dividend_rate": figures_dict["dividend_rate"],
-                "dividend_yield": figures_dict["dividend_yield"],
-                "payout_ratio": figures_dict["payout_ratio"],
-                "currency": figures_dict["currency"],
-                "context": context,
+                "last_trade_price": self.last_trade_price,
+                "last_trade_datetime": self.last_trade_datetime,
+                "daily_perf": self.daily_perf,
+                "price_earnings": self.price_earnings,
+                "price_to_fcf": self.price_to_fcf,
+                "profit_margin": self.profit_margin,
+                "debt_to_equity": self.debt_to_equity,
+                "sector": self.sector,
+                "market_cap": self.market_cap_formatted,
+                "high_52w": self.high_52w,
+                "low_52w": self.low_52w,
+                "avg_vol": self.avg_vol,
+                "revenue": self.revenue,
+                "income": self.income,
+                "dividend_rate": self.dividend_rate,
+                "dividend_yield": self.dividend_yield,
+                "payout_ratio": self.payout_ratio,
+                "currency": self.currency,
+                "context": self.context,
             },
         )
 
@@ -105,9 +96,9 @@ class StockDetail(View):
         '''
          # Get last trade price with datetime
         self.get_last_trade_data(ticker)
-        last_trade_price = self.last_trade_data.price
-        last_trade_timestamp = self.last_trade_data.participant_timestamp
-        last_trade_datetime = datetime.fromtimestamp(last_trade_timestamp/1e9)
+        self.last_trade_price = self.last_trade_data.price
+        self.last_trade_timestamp = self.last_trade_data.participant_timestamp
+        self.last_trade_datetime = datetime.fromtimestamp(self.last_trade_timestamp/1e9)
 
         # Get previous day close price
         nyse = mcal.get_calendar('NYSE')
@@ -116,24 +107,16 @@ class StockDetail(View):
         market_open = False
         while market_open is False:
             for i in range(10):
-                previous_day = last_trade_datetime - timedelta(i+1)
-                if previous_day.strftime('%Y-%m-%d') in market_open_days:
+                self.previous_day = self.last_trade_datetime - timedelta(i+1)
+                if self.previous_day.strftime('%Y-%m-%d') in market_open_days:
                     market_open = True
                     break
 
-        previous_day = previous_day.strftime("%Y-%m-%d")
-        self.get_daily_aggs(ticker, "day", previous_day, previous_day)
+        self.previous_day = self.previous_day.strftime("%Y-%m-%d")
+        self.get_daily_aggs(ticker, "day", self.previous_day, self.previous_day)
         last_close = self.aggs[0].close
-        daily_perf = Percent(last_trade_price / last_close - 1)
+        self.daily_perf = Percent(self.last_trade_price / last_close - 1)
         
-        last_trade_dict = {
-            "last_trade_price": last_trade_price,
-            "last_trade_datetime": last_trade_datetime,
-            "daily_perf": daily_perf,
-            "previous_day": previous_day,
-        }
-
-        return last_trade_dict
 
     def get_yfinance_figures(self, ticker):
         '''
@@ -145,57 +128,38 @@ class StockDetail(View):
         self.get_stock_info(ticker)
 
         # Overview
-        currency = self.stock_data["summaryDetail"]["currency"]
-        sector = self.stock_data["summaryProfile"]["sector"]
-        market_cap = self.stock_data["price"]["marketCap"]
-        market_cap_formatted = millify(market_cap)
-        high_52w = self.stock_data["summaryDetail"]["fiftyTwoWeekHigh"]
-        low_52w = self.stock_data["summaryDetail"]["fiftyTwoWeekLow"]
-        avg_vol = '{:,}'.format(self.stock_data["summaryDetail"]["averageVolume"])
+        self.currency = self.stock_data["summaryDetail"]["currency"]
+        self.sector = self.stock_data["summaryProfile"]["sector"]
+        self.market_cap = self.stock_data["price"]["marketCap"]
+        self.market_cap_formatted = millify(self.market_cap)
+        self.high_52w = self.stock_data["summaryDetail"]["fiftyTwoWeekHigh"]
+        self.low_52w = self.stock_data["summaryDetail"]["fiftyTwoWeekLow"]
+        self.avg_vol = '{:,}'.format(self.stock_data["summaryDetail"]["averageVolume"])
 
         # Financials
-        revenue = millify(self.stock_data["financialData"]["totalRevenue"])
-        income = millify(self.stock_data["defaultKeyStatistics"]["netIncomeToCommon"])
-        dividend_rate = self.stock_data["summaryDetail"]["dividendRate"]
-        dividend_yield = self.stock_data["summaryDetail"]["dividendYield"]
-        if dividend_rate is None:
-            dividend_rate = 0
-        if dividend_yield is None:
-            dividend_yield = 0
-        dividend_rate = round(dividend_rate, 2)
-        dividend_yield = Percent(dividend_yield)
-        payout_ratio = Percent(self.stock_data["summaryDetail"]["payoutRatio"])
+        self.revenue = millify(self.stock_data["financialData"]["totalRevenue"])
+        self.income = millify(self.stock_data["defaultKeyStatistics"]["netIncomeToCommon"])
+        self.dividend_rate = self.stock_data["summaryDetail"]["dividendRate"]
+        self.dividend_yield = self.stock_data["summaryDetail"]["dividendYield"]
+        if self.dividend_rate is None:
+            self.dividend_rate = 0
+        if self.dividend_yield is None:
+            self.dividend_yield = 0
+        self.dividend_rate = round(self.dividend_rate, 2)
+        self.dividend_yield = Percent(self.dividend_yield)
+        self.payout_ratio = Percent(self.stock_data["summaryDetail"]["payoutRatio"])
 
         # Multiples
-        price_earnings = round(self.stock_data["summaryDetail"]['trailingPE'], 2)
+        self.price_earnings = round(self.stock_data["summaryDetail"]['trailingPE'], 2)
         free_cash_flow = self.stock_data["financialData"]['freeCashflow']
         if free_cash_flow is None or free_cash_flow <= 0:
-            price_to_fcf = "-"
+            self.price_to_fcf = "-"
         else:
-            price_to_fcf = round(market_cap / free_cash_flow,2)
-        profit_margin = Percent(self.stock_data["defaultKeyStatistics"]['profitMargins'])
-        debt_to_equity = round(self.stock_data["financialData"]['debtToEquity']/100,2)
+            self.price_to_fcf = round(self.market_cap / free_cash_flow,2)
+        self.profit_margin = Percent(self.stock_data["defaultKeyStatistics"]['profitMargins'])
+        self.debt_to_equity = round(self.stock_data["financialData"]['debtToEquity']/100,2)
 
-        figures_dict = {
-            "currency": currency,
-            "sector": sector,
-            "market_cap": market_cap_formatted,
-            "high_52w": high_52w,
-            "low_52w": low_52w,
-            "avg_vol": avg_vol,
-            "revenue": revenue,
-            "income": income,
-            "dividend_rate": dividend_rate,
-            "dividend_yield": dividend_yield,
-            "payout_ratio": payout_ratio,
-            "price_earnings": price_earnings,
-            "price_to_fcf": price_to_fcf,
-            "profit_margin": profit_margin,
-            "debt_to_equity": debt_to_equity,
-        }
-
-        return figures_dict
-
+        
 
     def get_chart_data(self, ticker, interval, start_date, end_date):
         '''
@@ -215,9 +179,7 @@ class StockDetail(View):
         df = pd.DataFrame(trades)
         dates = df["timestamp"].tolist()
         prices = df["close"].tolist()
-        context = {"dates": mark_safe(json.dumps(dates)), "prices": mark_safe(json.dumps(prices))}
-
-        return context
+        self.context = {"dates": mark_safe(json.dumps(dates)), "prices": mark_safe(json.dumps(prices))}
 
 
     def get_last_trade_data(self, ticker):
