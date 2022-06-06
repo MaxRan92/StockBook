@@ -254,6 +254,7 @@
                 </div>
             </div>
             <div class="card-container col-lg-4 mb-4 mt-3 ">
+                {% if user.is_authenticated %}
                 <div class="element-card" id="post-comment-card">
                     {% if commented %}
                     <div class="alert alert-success" role="alert">
@@ -270,7 +271,7 @@
                     {% endif %}
 
 
-                    {% if user.is_authenticated %}
+                    
 
                     <h3>Leave a comment:</h3>
                     <p>Posting as: {{ user.username }}</p>
@@ -279,9 +280,10 @@
                         {% csrf_token %}
                         <button type="submit" class="btn btn-lg btn-post-comment fw-bold">Submit</button>
                     </form>
-                    {% endif %}
+                    
 
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
