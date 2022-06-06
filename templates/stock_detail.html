@@ -21,8 +21,14 @@
                 <div class="element-card">
                     <!-- asset title goes in these h1 tags -->
                     <h1 class="asset-title">{{ stockinfo.title }} ({{ stockinfo.ticker }})</h1>
+                    {% if daily_perf > 0 %}
+                    <h3>Last Price: <span class="text-success">{{ last_trade_price }} {{ currency }} ({{ daily_perf }})</span></h3>
+                    {% elif daily_perf == 0 %}
                     <h3>Last Price: <span>{{ last_trade_price }} {{ currency }} ({{ daily_perf }})</span></h3>
-                    <p>Currency: {{ currency}} - Last Update: <span>{{ last_trade_datetime }}</span></p>
+                    {% else %}
+                    <h3>Last Price: <span class="text-danger">{{ last_trade_price }} {{ currency }} ({{ daily_perf }})</span></h3>
+                    {% endif %}
+                    <p>Currency: {{ currency}}<br>Last Update: <span>{{ last_trade_datetime }}</span></p>
                 </div>
             </div>
             <div class="card-container col-md-8 mt-3">
