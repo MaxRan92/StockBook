@@ -30,7 +30,7 @@
                     <h3 class="fw-bold">Last Price: <span class="text-danger">{{ last_trade_price }} {{ currency }}
                             ({{ daily_perf }})</span></h3>
                     {% endif %}
-                    <p>Currency: {{ currency}}<br>Last Update: <span>{{ last_trade_datetime }}</span></p>
+                    <p>Currency: {{ currency}}<br>Updated: <span>{{ last_trade_datetime }}</span></p>
                 </div>
             </div>
             <div class="card-container col-md-8 mt-3">
@@ -212,7 +212,7 @@
                         {% for comment in comments %}
                         <div class="comments">
                             <!-- Body of the comment -->
-                            {{ comment.body | linebreaks }}
+                            {{ comment.body | linebreaksbr }}
                             <p>
                                 {% if comment.sentiment == 'BULL' %}
                                 <p>Sentiment: <span class="text-success fw-bold"><i class="fas fa-arrow-up"></i> Bullish</span></p>
@@ -249,6 +249,9 @@
                         <!-- else, if there is no comment -->
                         {% else %}
                         <p>No comments, be the first one!</p>
+                        {% if not user.is_authenticated %}
+                        <p>To post a comment, <a href="{% url 'account_login' %}">Log in</a> to our site! <br> If you do not have an account, please <a href="{% url 'account_signup' %}">Register</a> here.</p>
+                        {% endif %}
                         {% endif %}
                     </div>
                 </div>
@@ -269,10 +272,6 @@
                         Your comment has been successfully deleted
                     </div>
                     {% endif %}
-
-
-                    
-
                     <h3>Leave a comment:</h3>
                     <p>Posting as: {{ user.username }}</p>
                     <form method="post">
