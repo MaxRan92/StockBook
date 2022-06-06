@@ -17,15 +17,18 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-4">
-
-                <!-- asset title goes in these h1 tags -->
-                <h1 class="asset-title">{{ stockinfo.title }} ({{ stockinfo.ticker }})</h1>
-                <h3>Last Price: <span>{{ last_trade_price }} {{ currency }} ({{ daily_perf }})</span></h3>
-                <p>Currency: {{ currency}} - Last Update: <span>{{ last_trade_datetime }}</span></p>
+            <div class="card-container col-md-4 mt-3">
+                <div class="element-card">
+                    <!-- asset title goes in these h1 tags -->
+                    <h1 class="asset-title">{{ stockinfo.title }} ({{ stockinfo.ticker }})</h1>
+                    <h3>Last Price: <span>{{ last_trade_price }} {{ currency }} ({{ daily_perf }})</span></h3>
+                    <p>Currency: {{ currency}} - Last Update: <span>{{ last_trade_datetime }}</span></p>
+                </div>
             </div>
-            <div class="col-md-8">
-                <p>{{ stockinfo.description | safe }}</p>
+            <div class="card-container col-md-8 mt-3">
+                <div class="element-card">
+                    <p>{{ stockinfo.description | safe }}</p>
+                </div>
             </div>
         </div>
     </div>
@@ -33,143 +36,159 @@
 
 <div class="chart-area">
     <div class="container">
-            <canvas id="stock-chart" style="width:75%;height:300px;"></canvas>
-            <script>
-                var xValues = JSON.parse('{{context.dates}}');
-                var yValues = JSON.parse('{{context.prices}}');
-                
+        <div class="row">
+            <div class="card-container mt-3">
+                <div class="element-card">
+                    <canvas id="stock-chart" style="width:75%;height:300px;"></canvas>
+                    <script>
+                        var xValues = JSON.parse('{{context.dates}}');
+                        var yValues = JSON.parse('{{context.prices}}');
 
-                console.log(xValues);
-                console.log(yValues);
 
-                new Chart("stock-chart", {
-                type: "line",
-                data: {
-                    labels: xValues,
-                    responsive:true,
-                    maintainAspectRatio: false,
-                    datasets: [{
-                    fill: false,
-                    lineTension: 0,
-                    backgroundColor: "rgba(0,0,255,1.0)",
-                    borderColor: "rgba(0,0,255,0.1)",
-                    data: yValues
-                    }]
-                },
-                options: {
-                    legend: {display: false},
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                            min: 0,
-                            max: 200,
-                            stepSize: 10, 
+                        console.log(xValues);
+                        console.log(yValues);
+
+                        new Chart("stock-chart", {
+                            type: "line",
+                            data: {
+                                labels: xValues,
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                datasets: [{
+                                    fill: false,
+                                    lineTension: 0,
+                                    backgroundColor: "rgba(0,0,255,1.0)",
+                                    borderColor: "rgba(0,0,255,0.1)",
+                                    data: yValues
+                                }]
+                            },
+                            options: {
+                                legend: {
+                                    display: false
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            min: 0,
+                                            max: 200,
+                                            stepSize: 10,
+                                        }
+                                    }],
+                                    xAxes: [{
+                                        type: 'time',
+                                        time: {
+                                            unit: 'day',
+                                            tooltipFormat: 'YYYY MMM DD'
+                                        }
+                                    }],
+                                }
                             }
-                        }],
-                        xAxes: [{
-                            type: 'time',
-                            time: {
-                            unit: 'day',
-                            tooltipFormat: 'YYYY MMM DD'
-                            }
-                        }],
-                    }
-                }
-                });
-            </script>
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <div class="analysis-area">
     <div class="container">
         <div class="row">
-            <div class="col-md-3">
-                <h3>Overview</h3>
-                <table>
-                    <tr>
-                        <td>Sector</td>
-                        <td>{{ sector }}</td>
-                        
-                    </tr>
-                    <tr>
-                        <td>Market Cap</td>
-                        <td>{{ market_cap }}</td>
-                    </tr>
-                    <tr>
-                        <td>High-Low 52 weeks</td>
-                        <td>({{ high_52w }} - {{ low_52w }})</td>
-                    </tr>
-                    <tr>
-                        <td>Average Volume</td>
-                        <td>{{ avg_vol }} Shs</td>
-                    </tr>
-                </table>
-            </div>            
-            <div class="col-md-3">
-                <h3>Financials</h3>
-                <table>
-                    <tr>
-                        <td>Revenue</td>
-                        <td>{{ revenue }}</td>
-                        
-                    </tr>
-                    <tr>
-                        <td>Net Income/Loss</td>
-                        <td>{{ income }}</td>
-                    </tr>
-                    <tr>
-                        <td>Dividend Rate</td>
-                        <td>{{ dividend_rate }} ({{ dividend_yield }})</td>
-                    </tr>
-                    <tr>
-                        <td>Payout Ratio</td>
-                        <td>{{ payout_ratio }}</td>
-                    </tr>
-                </table>                
+            <div class="card-container col-md-3">
+                <div class="element-card">
+                    <h3>Overview</h3>
+                    <table>
+                        <tr>
+                            <td>Sector</td>
+                            <td>{{ sector }}</td>
+
+                        </tr>
+                        <tr>
+                            <td>Market Cap</td>
+                            <td>{{ market_cap }}</td>
+                        </tr>
+                        <tr>
+                            <td>High-Low 52 weeks</td>
+                            <td>({{ high_52w }} - {{ low_52w }})</td>
+                        </tr>
+                        <tr>
+                            <td>Average Volume</td>
+                            <td>{{ avg_vol }} Shs</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
-            <div class="col-md-3">
-                <h3>Multiples</h3>
-                <table>
-                    <tr>
-                        <td>Price/Earnings</td>
-                        <td>{{ price_earnings }}</td>
-                        
-                    </tr>
-                    <tr>
-                        <td>Price/FCF</td>
-                        <td>{{ price_to_fcf }}</td>
-                    </tr>
-                    <tr>
-                        <td>Profit Margin</td>
-                        <td>{{ profit_margin }}</td>
-                    </tr>
-                    <tr>
-                        <td>Debt to Equity</td>
-                        <td>{{ debt_to_equity }}</td>
-                    </tr>
-                </table>
+            <div class="card-container col-md-3">
+                <div class="element-card">
+                    <h3>Financials</h3>
+                    <table>
+                        <tr>
+                            <td>Revenue</td>
+                            <td>{{ revenue }}</td>
+
+                        </tr>
+                        <tr>
+                            <td>Net Income/Loss</td>
+                            <td>{{ income }}</td>
+                        </tr>
+                        <tr>
+                            <td>Dividend Rate</td>
+                            <td>{{ dividend_rate }} ({{ dividend_yield }})</td>
+                        </tr>
+                        <tr>
+                            <td>Payout Ratio</td>
+                            <td>{{ payout_ratio }}</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
-            <div class="col-md-3">
-                <h3>Sentiment</h3>
-                <table>
-                    <tr>
-                        <td><i class="fas fa-arrow-up"></i> Bulls</i></td>
-                        <td>{{ bulls_num }}</td>
-                        
-                    </tr>
-                    <tr>
-                        <td><i class="fas fa-shield-alt"></i> Hold</td>
-                        <td>{{ hold_num }}</td>
-                    </tr>
-                    <tr>
-                        <td><i class="fas fa-arrow-down"></i> Bears</td>
-                        <td>{{ bears_num }}</td>
-                    </tr>
-                    <tr>
-                        <td>Bull/Bear Ratio</td>
-                        <td>{{ bulls_bears_ratio }}</td>
-                    </tr>
-                </table>
+            <div class="card-container col-md-3">
+                <div class="element-card">
+                    <h3>Multiples</h3>
+                    <table>
+                        <tr>
+                            <td>Price/Earnings</td>
+                            <td>{{ price_earnings }}</td>
+
+                        </tr>
+                        <tr>
+                            <td>Price/FCF</td>
+                            <td>{{ price_to_fcf }}</td>
+                        </tr>
+                        <tr>
+                            <td>Profit Margin</td>
+                            <td>{{ profit_margin }}</td>
+                        </tr>
+                        <tr>
+                            <td>Debt to Equity</td>
+                            <td>{{ debt_to_equity }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="card-container col-md-3">
+                <div class="element-card">
+                    <h3>Sentiment</h3>
+                    <table>
+                        <tr>
+                            <td><i class="fas fa-arrow-up"></i> Bulls</i></td>
+                            <td>{{ bulls_num }}</td>
+
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-shield-alt"></i> Hold</td>
+                            <td>{{ hold_num }}</td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-arrow-down"></i> Bears</td>
+                            <td>{{ bears_num }}</td>
+                        </tr>
+                        <tr>
+                            <td>Bull/Bear Ratio</td>
+                            <td>{{ bulls_bears_ratio }}</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -178,55 +197,59 @@
 <div class="comments-area">
     <div class="container">
         <div class="row">
-            <div class="col-md-8 card mb-4  mt-3">
-                <h3>Comments:</h3>
-                <div class="comments-card">
-                    <!-- if there is at least one comment -->
-                    {% if comments %}
-                    <!-- For loop to iterate through comments -->
-                    {% for comment in comments %}
-                    <div class="comments">
-                        <div class="row">
-                            <div class="col-md-8">
-                                <p>
-                                    {{ comment.name }}
-                                    <span>
-                                        {{ comment.created_on }}
-                                    </span>
-                                </p>
-                            </div>
-                            {% if comment.name == request.user.username %}
-                            <div class="col-md-2">
-                                <a class="btn btn-submit" href="{% url 'delete_comment' stockinfo.slug comment.pk %}">Delete</a>
-                            </div>
-                            <div class="col-md-2">
-                                <a class="btn btn-submit" href="{% url 'edit_comment' stockinfo.slug comment.pk %}">Edit</a>
-                            </div>
+            <div class="card-container col-md-8 mb-4 mt-3">
+                <div class="element-card">
+                    <h3>Comments:</h3>
+                    <div class="comments-card">
+                        <!-- if there is at least one comment -->
+                        {% if comments %}
+                        <!-- For loop to iterate through comments -->
+                        {% for comment in comments %}
+                        <div class="comments">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <p>
+                                        {{ comment.name }}
+                                        <span>
+                                            {{ comment.created_on }}
+                                        </span>
+                                    </p>
+                                </div>
+                                {% if comment.name == request.user.username %}
+                                <div class="col-md-2">
+                                    <a class="btn btn-submit"
+                                        href="{% url 'delete_comment' stockinfo.slug comment.pk %}">Delete</a>
+                                </div>
+                                <div class="col-md-2">
+                                    <a class="btn btn-submit"
+                                        href="{% url 'edit_comment' stockinfo.slug comment.pk %}">Edit</a>
+                                </div>
 
-                            {% endif %}
+                                {% endif %}
+                            </div>
+                            <p>
+                                {% if comment.sentiment == 'BULL' %}
+                                <p>Sentiment: <i class="fas fa-arrow-up"></i> Bullish</p>
+                                {% elif comment.sentiment == 'BEAR' %}
+                                <p>Sentiment: <i class="fas fa-arrow-down"></i> Bearish</p>
+                                {% else %}
+                                <p>Sentiment: <i class="fas fa-shield-alt"></i> Hold</p>
+                                {% endif %}
+                            </p>
+                            <!-- Body of the comment -->
+                            {{ comment.body | linebreaks }}
                         </div>
-                        <p>
-                            {% if comment.sentiment == 'BULL' %}
-                            <p>Sentiment: <i class="fas fa-arrow-up"></i> Bullish</p>
-                            {% elif comment.sentiment == 'BEAR' %}
-                            <p>Sentiment: <i class="fas fa-arrow-down"></i> Bearish</p>
-                            {% else %}
-                            <p>Sentiment: <i class="fas fa-shield-alt"></i> Hold</p>
-                            {% endif %}
-                        </p>
-                        <!-- Body of the comment -->
-                        {{ comment.body | linebreaks }}
+                        <!-- end of loop -->
+                        {% endfor %}
+                        <!-- else, if there is no comment -->
+                        {% else %}
+                        <p>No comments, be the first one!</p>
+                        {% endif %}
                     </div>
-                    <!-- end of loop -->
-                    {% endfor %}
-                    <!-- else, if there is no comment -->
-                    {% else %}
-                    <p>No comments, be the first one!</p>
-                    {% endif %}
                 </div>
             </div>
-            <div class="col-md-4 card mb-4  mt-3 ">
-                <div>
+            <div class="card-container col-md-4 mb-4 mt-3 ">
+                <div class="element-card">
                     {% if commented %}
                     <div class="alert alert-success" role="alert">
                         Your comment has been successfully posted
@@ -240,7 +263,7 @@
                         Your comment has been successfully deleted
                     </div>
                     {% endif %}
-                    
+
 
                     {% if user.is_authenticated %}
 

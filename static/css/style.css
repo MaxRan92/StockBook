@@ -10,9 +10,6 @@ body {
 
 /* Assets cards in index.html*/
 
-.row {
-    margin: 2px;
-}
 
 .index-card {
     border: solid;
@@ -67,12 +64,13 @@ body {
 /* Stock detail */
 
 .masthead {
-    padding: 25px 0;
+    padding: 10px 0 0 0;
 }
 
 .detail-image-container {
     display: flex;
     justify-content: center;
+    margin: auto;
     background-color: #fff;
     border-radius: 5px;
     border-width: 2px;
@@ -80,17 +78,29 @@ body {
     border-color: #507DBC;
     box-shadow: 0 4px 18px 0 rgba(80, 125, 188, 0.15), 0 6px 20px 0 rgba(80, 125, 188, 0.15);
     height: 150px;
-
 }
-
-  
-       
+      
 
 .detail-image-container img {
     margin: auto;
     max-width: 25%;
     max-height: 100px;
     object-fit: scale-down;
+}
+
+.element-card {
+    background-color: #fff;
+    border-radius: 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(41, 43, 44, 0.5);
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+}  
+
+.card-container {
+    padding: 2px;
 }
 
 .asset-title {
