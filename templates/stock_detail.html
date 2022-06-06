@@ -253,7 +253,7 @@
                 </div>
             </div>
             <div class="card-container col-lg-4 mb-4 mt-3 ">
-                <div class="element-card">
+                <div class="element-card" id="post-comment-card">
                     {% if commented %}
                     <div class="alert alert-success" role="alert">
                         Your comment has been successfully posted
@@ -276,7 +276,7 @@
                     <form method="post">
                         {{ comment_form | crispy }}
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-lg alert-success">Submit</button>
+                        <button type="submit" class="btn btn-lg btn-post-comment fw-bold">Submit</button>
                     </form>
                     {% endif %}
 
