@@ -14,13 +14,15 @@ body {
     margin: 2px;
 }
 
-.card {
-    border: none;
-    outline: 2px solid #507DBC;
+.index-card {
+    border: solid;
+    border-width: 2px;
+    border-color: #507DBC;
+    border-radius: 5px;
     margin: 2%;
     height: 96%;
     background-color: #fff;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 4px 8px 0 rgba(80, 125, 188, 0.2), 0 6px 20px 0 rgba(80, 125, 188, 0.19);
 }
 
 .card-img-top {
@@ -71,13 +73,18 @@ body {
 .detail-image-container {
     display: flex;
     justify-content: center;
-    background-color: rgba(41, 43, 44, 0.15);
-    border-radius: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    border-width: 2px;
     border-style: solid;
-    border-color: rgba(41, 43, 44, 0.1);
+    border-color: #507DBC;
+    box-shadow: 0 4px 18px 0 rgba(80, 125, 188, 0.15), 0 6px 20px 0 rgba(80, 125, 188, 0.15);
     height: 150px;
 
 }
+
+  
+       
 
 .detail-image-container img {
     margin: auto;
