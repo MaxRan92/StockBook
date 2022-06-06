@@ -33,6 +33,8 @@ def get_historical_prices():
     print(df)
 
 
-get_historical_prices()
+def get_stock_info(ticker):
+        stock_data = yf.Ticker(ticker).stats()
+        print(stock_data)
 
-
+get_stock_info("INTC")

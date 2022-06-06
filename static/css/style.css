@@ -1,6 +1,7 @@
 html,
 body {
     font-family: 'Roboto', sans-serif;
+    background-color: rgba(41, 43, 44, 0.05);
 }
 
 .navbar span {
@@ -9,9 +10,18 @@ body {
 
 /* Assets cards in index.html*/
 
+.row {
+    margin: 2px;
+}
+
 .card {
     border: none;
-    background-color: transparent;
+    outline: 2px solid #507DBC;
+    outline-offset: 0px;
+    margin: 2%;
+    height: 96%;
+    background-color: #fff;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .card-img-top {
@@ -50,10 +60,7 @@ body {
     color: #FFB30F;
 }
 
-.card-container {
-    outline: 2px solid #507DBC;
-    outline-offset: -10px;
-}
+
 
 
 /* Stock detail */

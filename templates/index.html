@@ -21,10 +21,9 @@
                             </div>
                             <a href="{% url 'stock_detail' stockinfo.slug  %}" class="stock-link">
                                 <h2 class="card-title">{{ stockinfo.title }}</h2>
+                                <hr>
                                 <p class="card-text">{{ stockinfo.excerpt }}</p>
                             </a>
-                            <hr />
-                            <p class="card-text text-muted h6">{{ stockinfo.created_on}}</p>
                         </div>
                     </div>
                 </div>
