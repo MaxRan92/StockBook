@@ -77,6 +77,7 @@ class StockDetail(View):
                 "comment_deleted": self.comment_deleted_var,
                 "bulls_num": self.bulls_num,
                 "bears_num": self.bears_num,
+                "hold_num": self.hold_num,
                 "bulls_bears_ratio": self.bulls_bears_ratio,
                 "last_trade_price": self.last_trade_price,
                 "last_trade_datetime": self.last_trade_datetime,
@@ -109,6 +110,7 @@ class StockDetail(View):
         '''
         self.bulls_num = len(stockinfo.comments.filter(sentiment='BULL', approved=True).order_by('-created_on'))
         self.bears_num = len(stockinfo.comments.filter(sentiment='BEAR', approved=True).order_by('-created_on'))
+        self.hold_num = len(stockinfo.comments.filter(sentiment='HOLD', approved=True).order_by('-created_on'))
         if self.bulls_num == 0 or self.bears_num == 0:
             self.bulls_bears_ratio = "N/A"
         else:
@@ -259,6 +261,7 @@ class StockDetail(View):
                 "comment_form": CommentForm,
                 "bulls_num": self.bulls_num,
                 "bears_num": self.bears_num,
+                "hold_num": self.hold_num,
                 "bulls_bears_ratio": self.bulls_bears_ratio,
                 "last_trade_price": self.last_trade_price,
                 "last_trade_datetime": self.last_trade_datetime,
