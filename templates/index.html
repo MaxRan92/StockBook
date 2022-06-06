@@ -11,20 +11,23 @@
                 {% for stockinfo in stockinfo_list %}
                 <div class="div col-md-3 card-container">
                     <div class="div card mb-3">
-                        <div class="div card-body">
-                            <div class="image-container">
-                                {% if "placeholder" in stockinfo.logo_image.url %}
-                                <img class="card-img-top" src="https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png?202205200410">
-                                {% else %}
-                                <img class="card-img-top" src=" {{ stockinfo.logo_image.url }}">
-                                {% endif %}
+                        <a href="{% url 'stock_detail' stockinfo.slug  %}" class="stock-link">
+                            <div class="div card-body">
+                                <div class="image-container">
+                                    {% if "placeholder" in stockinfo.logo_image.url %}
+                                    <img class="card-img-top"
+                                        src="https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png?202205200410">
+                                    {% else %}
+                                    <img class="card-img-top" src=" {{ stockinfo.logo_image.url }}">
+                                    {% endif %}
+                                </div>
+                                <div class="stock-name-container">
+                                    <h2 class="card-title">{{ stockinfo.title }}</h2>
+                                    <hr>
+                                    <p class="card-text">{{ stockinfo.excerpt }}</p>
+                                </div>
                             </div>
-                            <a href="{% url 'stock_detail' stockinfo.slug  %}" class="stock-link">
-                                <h2 class="card-title">{{ stockinfo.title }}</h2>
-                                <hr>
-                                <p class="card-text">{{ stockinfo.excerpt }}</p>
-                            </a>
-                        </div>
+                        </a>
                     </div>
                 </div>
                 {% if forloop.counter|divisibleby:4 %}
@@ -32,22 +35,22 @@
             <div class="row">
                 {% endif %}
                 {% endfor %}
+            </div>
         </div>
     </div>
-</div>
-{% if is_paginated %}
-<nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-        {% if page_obj.has_previous %}
-        <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">&laquo; PREV </a></li>
-        {% endif %}
-        {% if page_obj.has_next %}
-        <li><a href="?page={{ page_obj.next_page_number }}" class="page-link"> NEXT &raquo;</a></li>
+    {% if is_paginated %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">&laquo; PREV </a></li>
+            {% endif %}
+            {% if page_obj.has_next %}
+            <li><a href="?page={{ page_obj.next_page_number }}" class="page-link"> NEXT &raquo;</a></li>
 
-        {% endif %}
-    </ul>
-</nav>
-{% endif %}
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
 
 </div>
 
