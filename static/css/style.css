@@ -102,6 +102,22 @@ body {
     padding: 4px;
 }
 
+tr {
+    height: 60px !important;
+}
+
+td, th {
+    width: 50%;
+    vertical-align: middle;
+}
+
+td {
+    text-align: center;
+}
+
+th {
+    text-align: left;
+}
 
 /* Footer */
 
@@ -155,5 +171,7 @@ footer hr {
 /* chart */
 
 .chart {
-    max-height: 38%;
+    max-height: 33vh;
+    min-height: 25vh;
 }
+

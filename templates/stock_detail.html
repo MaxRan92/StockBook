@@ -22,11 +22,13 @@
                     <!-- asset title goes in these h1 tags -->
                     <h1 class="font-weight-bold">{{ stockinfo.title }} ({{ stockinfo.ticker }})</h1>
                     {% if daily_perf > 0 %}
-                    <h3>Last Price: <span class="text-success">{{ last_trade_price }} {{ currency }} ({{ daily_perf }})</span></h3>
+                    <h3>Last Price: <span class="text-success">{{ last_trade_price }} {{ currency }}
+                            ({{ daily_perf }})</span></h3>
                     {% elif daily_perf == 0 %}
                     <h3>Last Price: <span>{{ last_trade_price }} {{ currency }} ({{ daily_perf }})</span></h3>
                     {% else %}
-                    <h3>Last Price: <span class="text-danger">{{ last_trade_price }} {{ currency }} ({{ daily_perf }})</span></h3>
+                    <h3>Last Price: <span class="text-danger">{{ last_trade_price }} {{ currency }}
+                            ({{ daily_perf }})</span></h3>
                     {% endif %}
                     <p>Currency: {{ currency}}<br>Last Update: <span>{{ last_trade_datetime }}</span></p>
                 </div>
@@ -44,10 +46,10 @@
 <div class="chart-area">
     <div class="container">
         <div class="row">
-            <div class="card-container mt-3">
+            <div class="col-12 card-container mt-3">
                 <div class="element-card">
                     <h3>YTD Price Chart</h3>
-                    <canvas id="stock-chart" style="width:75%;height:300px;"></canvas>
+                    <canvas id="stock-chart" class="chart" style="width:75%;height:300px;"></canvas>
                     <script>
                         var xValues = JSON.parse('{{context.dates}}');
                         var yValues = JSON.parse('{{context.prices}}');
@@ -72,12 +74,12 @@
                             },
                             options: {
                                 elements: {
-                                    point:{
+                                    point: {
                                         radius: 0,
                                         pointRadius: 1,
                                         pointHoverRadius: 5,
-                                        }
-                                    },
+                                    }
+                                },
                                 plugins: {
                                     legend: {
                                         display: false
@@ -95,97 +97,97 @@
 <div class="analysis-area">
     <div class="container">
         <div class="row">
-            <div class="card-container col-md-3">
+            <div class="card-container col-md-6 col-lg-3">
                 <div class="element-card">
                     <h3>Overview</h3>
-                    <table>
+                    <table class="table">
                         <tr>
-                            <td>Sector</td>
+                            <th>Sector</th>
                             <td>{{ sector }}</td>
 
                         </tr>
                         <tr>
-                            <td>Market Cap</td>
+                            <th>Market Cap</th>
                             <td>{{ market_cap }}</td>
                         </tr>
                         <tr>
-                            <td>High-Low 52 weeks</td>
+                            <th>High-Low 52 weeks</th>
                             <td>({{ high_52w }} - {{ low_52w }})</td>
                         </tr>
                         <tr>
-                            <td>Average Volume</td>
+                            <th>Average Volume</th>
                             <td>{{ avg_vol }} Shs</td>
                         </tr>
                     </table>
                 </div>
             </div>
-            <div class="card-container col-md-3">
+            <div class="card-container col-md-6 col-lg-3">
                 <div class="element-card">
                     <h3>Financials</h3>
-                    <table>
-                        <tr>
-                            <td>Revenue</td>
-                            <td>{{ revenue }}</td>
+                        <table class="table">
+                            <tr>
+                                <th>Revenue</th>
+                                <td>{{ revenue }}</td>
 
-                        </tr>
-                        <tr>
-                            <td>Net Income/Loss</td>
-                            <td>{{ income }}</td>
-                        </tr>
-                        <tr>
-                            <td>Dividend Rate</td>
-                            <td>{{ dividend_rate }} ({{ dividend_yield }})</td>
-                        </tr>
-                        <tr>
-                            <td>Payout Ratio</td>
-                            <td>{{ payout_ratio }}</td>
-                        </tr>
-                    </table>
+                            </tr>
+                            <tr>
+                                <th>Net Income/Loss</th>
+                                <td>{{ income }}</td>
+                            </tr>
+                            <tr>
+                                <th>Dividend Rate</th>
+                                <td>{{ dividend_rate }} ({{ dividend_yield }})</td>
+                            </tr>
+                            <tr>
+                                <th>Payout Ratio</th>
+                                <td>{{ payout_ratio }}</td>
+                            </tr>
+                        </table>
                 </div>
             </div>
-            <div class="card-container col-md-3">
+            <div class="card-container col-md-6 col-lg-3">
                 <div class="element-card">
                     <h3>Multiples</h3>
-                    <table>
+                    <table class="table">
                         <tr>
-                            <td>Price/Earnings</td>
+                            <th>Price/Earnings</th>
                             <td>{{ price_earnings }}</td>
 
                         </tr>
                         <tr>
-                            <td>Price/FCF</td>
+                            <th>Price/FCF</th>
                             <td>{{ price_to_fcf }}</td>
                         </tr>
                         <tr>
-                            <td>Profit Margin</td>
+                            <th>Profit Margin</th>
                             <td>{{ profit_margin }}</td>
                         </tr>
                         <tr>
-                            <td>Debt to Equity</td>
+                            <th>Debt to Equity</th>
                             <td>{{ debt_to_equity }}</td>
                         </tr>
                     </table>
                 </div>
             </div>
-            <div class="card-container col-md-3">
+            <div class="card-container col-md-6 col-lg-3">
                 <div class="element-card">
                     <h3>Sentiment</h3>
-                    <table>
-                        <tr>
-                            <td><i class="fas fa-arrow-up"></i> Bulls</i></td>
+                    <table class="table">
+                        <tr class="text-success">
+                            <th ><i class="fas fa-arrow-up"></i> Bulls</i></th>
                             <td>{{ bulls_num }}</td>
 
                         </tr>
                         <tr>
-                            <td><i class="fas fa-shield-alt"></i> Hold</td>
+                            <th><i class="fas fa-shield-alt"></i> Hold</th>
                             <td>{{ hold_num }}</td>
                         </tr>
-                        <tr>
-                            <td><i class="fas fa-arrow-down"></i> Bears</td>
+                        <tr class="text-danger">
+                            <th><i class="fas fa-arrow-down"></i> Bears</th>
                             <td>{{ bears_num }}</td>
                         </tr>
                         <tr>
-                            <td>Bull/Bear Ratio</td>
+                            <th>Bull/Bear Ratio</th>
                             <td>{{ bulls_bears_ratio }}</td>
                         </tr>
                     </table>
