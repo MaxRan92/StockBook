@@ -247,7 +247,7 @@ class StockDetail(View):
         self.sentiment_analysis(stockinfo)
         self.get_polygon_last_trade(stockinfo.ticker)
         self.get_yfinance_figures(stockinfo.ticker)
-        self.context = self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", self.previous_day)
+        self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", self.previous_day)
 
         return render(
             request,
