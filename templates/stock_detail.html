@@ -20,14 +20,14 @@
             <div class="card-container col-md-4 mt-3">
                 <div class="element-card">
                     <!-- asset title goes in these h1 tags -->
-                    <h1 class="font-weight-bold">{{ stockinfo.title }} ({{ stockinfo.ticker }})</h1>
+                    <h1 class="fw-bold">{{ stockinfo.title }} ({{ stockinfo.ticker }})</h1>
                     {% if daily_perf > 0 %}
-                    <h3>Last Price: <span class="text-success">{{ last_trade_price }} {{ currency }}
+                    <h3 class="fw-bold">Last Price: <span class="text-success">{{ last_trade_price }} {{ currency }}
                             ({{ daily_perf }})</span></h3>
                     {% elif daily_perf == 0 %}
-                    <h3>Last Price: <span>{{ last_trade_price }} {{ currency }} ({{ daily_perf }})</span></h3>
+                    <h3 class="fw-bold">Last Price: <span>{{ last_trade_price }} {{ currency }} ({{ daily_perf }})</span></h3>
                     {% else %}
-                    <h3>Last Price: <span class="text-danger">{{ last_trade_price }} {{ currency }}
+                    <h3 class="fw-bold">Last Price: <span class="text-danger">{{ last_trade_price }} {{ currency }}
                             ({{ daily_perf }})</span></h3>
                     {% endif %}
                     <p>Currency: {{ currency}}<br>Last Update: <span>{{ last_trade_datetime }}</span></p>
@@ -179,7 +179,7 @@
 
                         </tr>
                         <tr>
-                            <th><i class="fas fa-shield-alt"></i> Hold</th>
+                            <th><i class="fas fa-shield-alt"></i> Holders</th>
                             <td>{{ hold_num }}</td>
                         </tr>
                         <tr class="text-danger">
@@ -200,19 +200,31 @@
 <div class="comments-area">
     <div class="container">
         <div class="row">
-            <div class="card-container col-md-8 mb-4 mt-3">
+            <div class="card-container col-lg-8 mb-4 mt-3">
                 <div class="element-card">
                     <h3>Comments:</h3>
+                    <hr>
                     <div class="comments-card">
                         <!-- if there is at least one comment -->
                         {% if comments %}
                         <!-- For loop to iterate through comments -->
                         {% for comment in comments %}
                         <div class="comments">
+                            <!-- Body of the comment -->
+                            {{ comment.body | linebreaks }}
+                            <p>
+                                {% if comment.sentiment == 'BULL' %}
+                                <p>Sentiment: <span class="text-success fw-bold"><i class="fas fa-arrow-up"></i> Bullish</span></p>
+                                {% elif comment.sentiment == 'BEAR' %}
+                                <p>Sentiment: <span class="text-danger fw-bold"><i class="fas fa-arrow-down"></i> Bearish</span></p>
+                                {% else %}
+                                <p>Sentiment: <span class="fw-bold"><i class="fas fa-shield-alt"></i> Hold</span></p>
+                                {% endif %}
+                            </p>
                             <div class="row">
-                                <div class="col-md-8">
-                                    <p>
-                                        {{ comment.name }}
+                                <div class="col-md-8 post-name-time">
+                                    <p class="fw-bold">
+                                        {{ comment.name }} on 
                                         <span>
                                             {{ comment.created_on }}
                                         </span>
@@ -220,28 +232,17 @@
                                 </div>
                                 {% if comment.name == request.user.username %}
                                 <div class="col-md-2">
-                                    <a class="btn btn-submit"
-                                        href="{% url 'delete_comment' stockinfo.slug comment.pk %}">Delete</a>
-                                </div>
-                                <div class="col-md-2">
-                                    <a class="btn btn-submit"
+                                    <a class="btn btn-submit btn-edit fw-bold"
                                         href="{% url 'edit_comment' stockinfo.slug comment.pk %}">Edit</a>
                                 </div>
-
+                                <div class="col-md-2">
+                                    <a class="btn btn-submit btn-delete fw-bold"
+                                        href="{% url 'delete_comment' stockinfo.slug comment.pk %}">Delete</a>
+                                </div>
                                 {% endif %}
                             </div>
-                            <p>
-                                {% if comment.sentiment == 'BULL' %}
-                                <p>Sentiment: <i class="fas fa-arrow-up"></i> Bullish</p>
-                                {% elif comment.sentiment == 'BEAR' %}
-                                <p>Sentiment: <i class="fas fa-arrow-down"></i> Bearish</p>
-                                {% else %}
-                                <p>Sentiment: <i class="fas fa-shield-alt"></i> Hold</p>
-                                {% endif %}
-                            </p>
-                            <!-- Body of the comment -->
-                            {{ comment.body | linebreaks }}
                         </div>
+                        <hr>
                         <!-- end of loop -->
                         {% endfor %}
                         <!-- else, if there is no comment -->
@@ -251,7 +252,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card-container col-md-4 mb-4 mt-3 ">
+            <div class="card-container col-lg-4 mb-4 mt-3 ">
                 <div class="element-card">
                     {% if commented %}
                     <div class="alert alert-success" role="alert">
@@ -275,7 +276,7 @@
                     <form method="post">
                         {{ comment_form | crispy }}
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-lg">Submit</button>
+                        <button type="submit" class="btn btn-lg alert-success">Submit</button>
                     </form>
                     {% endif %}
 

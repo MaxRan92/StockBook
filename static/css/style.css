@@ -175,3 +175,33 @@ footer hr {
     min-height: 25vh;
 }
 
+
+/* comments */
+
+.comments {
+    padding: 10px;
+    margin: 10px;
+}
+
+.btn {
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    margin: 5%;
+    width: 90%;
+}
+
+.post-name-time p {
+    margin: auto;
+}
+
+.post-name-time {
+    margin: auto;
+}
+
+.btn-edit:hover {
+    background: rgba(255, 0, 0, 0.3);
+}
+
+.btn-delete:hover {
+    background: rgba(255, 0, 0, 0.3);
+}
