@@ -61,34 +61,27 @@
                             data: {
                                 labels: xValues,
                                 responsive: true,
-                                maintainAspectRatio: false,
+                                maintainAspectRatio: true,
                                 datasets: [{
                                     fill: false,
                                     lineTension: 0,
-                                    backgroundColor: "rgba(0,0,255,1.0)",
-                                    borderColor: "rgba(0,0,255,0.1)",
+                                    backgroundColor: "rgba(41,43,44,0)",
+                                    borderColor: "rgba(80, 125, 188, 1)",
                                     data: yValues
                                 }]
                             },
                             options: {
-                                legend: {
-                                    display: false
-                                },
-                                scales: {
-                                    yAxes: [{
-                                        ticks: {
-                                            min: 0,
-                                            max: 200,
-                                            stepSize: 10,
+                                elements: {
+                                    point:{
+                                        radius: 0,
+                                        pointRadius: 1,
+                                        pointHoverRadius: 5,
                                         }
-                                    }],
-                                    xAxes: [{
-                                        type: 'time',
-                                        time: {
-                                            unit: 'day',
-                                            tooltipFormat: 'YYYY MMM DD'
-                                        }
-                                    }],
+                                    },
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
                                 }
                             }
                         });
