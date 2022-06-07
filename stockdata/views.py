@@ -20,9 +20,10 @@ from django.urls import reverse_lazy
 from .models import StockInfo, Comment
 from .forms import CommentForm, EditForm
 from polygon import RESTClient
+from requests.exceptions import ConnectionError, Timeout, TooManyRedirects, RequestException
 
 
-MILLNAMES = ['',' k',' M',' Bn',' Tn']
+MILLNAMES = ['', ' k', ' M', ' Bn', ' Tn']
 
 
 class StockList(generic.ListView):
@@ -132,6 +133,7 @@ class StockDetail(View):
         in order to get the last trade price, the linked timestamp and the daily
         performance relative to previous close
         '''
+
          # Get last trade price with datetime
         self.get_last_trade_data(ticker)
         self.last_trade_price = self.last_trade_data.price
@@ -232,13 +234,17 @@ class StockDetail(View):
     def get_last_trade_data(self, ticker):
         client = RESTClient(API_KEY)
 
-        self.last_trade_data = client.get_last_trade(ticker, params=None, raw=False)
-    
+        try:
+            self.last_trade_data = client.get_last_trade(ticker, params=None, raw=False)
+        except (ConnectionError, Timeout, TooManyRedirects, RequestException) as e:
+            print(e)
 
     def get_daily_aggs(self, ticker, timespan, start_date, end_date):
         client = RESTClient(API_KEY)
-
-        self.aggs = client.get_aggs(ticker, 1, timespan, start_date, end_date)
+        try:
+            self.aggs = client.get_aggs(ticker, 1, timespan, start_date, end_date)
+        except (ConnectionError, Timeout, TooManyRedirects, RequestException) as e:
+            print(e)
 
 
     def get_stock_info(self, ticker):
