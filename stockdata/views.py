@@ -189,12 +189,17 @@ class StockDetail(View):
         if not self.yfinance_error:
 
             # Overview
+            # Currency
             self.currency = self.stock_data["summaryDetail"]["currency"]
+            # Sector
             self.sector = self.stock_data["summaryProfile"]["sector"]
+            # Market Cap
             self.market_cap = self.stock_data["price"]["marketCap"]
             self.market_cap_formatted = millify(self.market_cap)
+            # High-Low 52 Weeks
             self.high_52w = self.stock_data["summaryDetail"]["fiftyTwoWeekHigh"]
             self.low_52w = self.stock_data["summaryDetail"]["fiftyTwoWeekLow"]
+            # Average Volume
             self.avg_vol = '{:,}'.format(self.stock_data["summaryDetail"]["averageVolume"])
 
             # Financials
@@ -211,23 +216,35 @@ class StockDetail(View):
             self.payout_ratio = Percent(self.stock_data["summaryDetail"]["payoutRatio"])
 
             # Multiples
-            try:
-                self.price_earnings = round(self.stock_data["summaryDetail"]['trailingPE'], 2)
-            except KeyError:
-                self.price_earnings = "-"
-            free_cash_flow = self.stock_data["financialData"]['freeCashflow']
-            if free_cash_flow is None or free_cash_flow <= 0:
+            # Price/Earnings
+            self.price_earnings = self.yfinance_data_handler("summaryDetail", "trailingPE")
+            if type(self.price_earnings) == float or type(self.price_earnings) == int:
+                self.price_earnings = round(self.price_earnings, 2)
+            # Price/FCF
+            free_cash_flow = self.yfinance_data_handler("financialData", "freeCashflow")
+            if (type(free_cash_flow) == int or type(free_cash_flow) == float) and free_cash_flow > 0:
+                self.price_to_fcf = round(self.market_cap / free_cash_flow, 2)
+            else: 
                 self.price_to_fcf = "-"
-            else:
-                self.price_to_fcf = round(self.market_cap / free_cash_flow,2)
-            self.profit_margin = Percent(self.stock_data["defaultKeyStatistics"]['profitMargins'])
-            try:
-                self.debt_to_equity = round(self.stock_data["financialData"]['debtToEquity']/100,2)
-            except TypeError:
-                self.debt_to_equity = "N/A"
+            # Profit Margin
+            self.profit_margin = self.yfinance_data_handler("defaultKeyStatistics", "profitMargins")
+            if type(self.profit_margin) == float or type(self.profit_margin) == int:
+                self.profit_margin = Percent(self.profit_margin)
+            # Debt to Equity
+            self.debt_to_equity = self.yfinance_data_handler("financialData", "debtToEquity")
+            if type(self.debt_to_equity) == float or type(self.debt_to_equity) == int:
+                self.debt_to_equity = round(self.debt_to_equity/100, 2)
 
-
-        
+    def yfinance_data_handler(self, key1, key2):
+        '''
+        To override yfinance objects so UX handles error condition gracefully
+        '''
+        try:
+            return self.stock_data[key1][key2]
+        except (KeyError, TypeError):
+            return "-"
+    
+       
 
     def get_chart_data(self, ticker, interval, start_date, end_date):
         '''

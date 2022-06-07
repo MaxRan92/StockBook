@@ -84,7 +84,7 @@ body {
 
 .detail-image-container img {
     margin: auto;
-    max-width: 25%;
+    max-width: 60%;
     max-height: 100px;
     object-fit: scale-down;
 }
