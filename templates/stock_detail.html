@@ -25,7 +25,8 @@
                     <h3 class="fw-bold">Last Price: <span class="text-success">{{ last_trade_price }} {{ currency }}
                             ({{ daily_perf }})</span></h3>
                     {% elif daily_perf == 0 %}
-                    <h3 class="fw-bold">Last Price: <span>{{ last_trade_price }} {{ currency }} ({{ daily_perf }})</span></h3>
+                    <h3 class="fw-bold">Last Price: <span>{{ last_trade_price }} {{ currency }}
+                            ({{ daily_perf }})</span></h3>
                     {% else %}
                     <h3 class="fw-bold">Last Price: <span class="text-danger">{{ last_trade_price }} {{ currency }}
                             ({{ daily_perf }})</span></h3>
@@ -125,25 +126,25 @@
             <div class="card-container col-md-6 col-lg-3">
                 <div class="element-card">
                     <h3>Financials</h3>
-                        <table class="table">
-                            <tr>
-                                <th>Revenue</th>
-                                <td>{{ revenue }}</td>
+                    <table class="table">
+                        <tr>
+                            <th>Revenue</th>
+                            <td>{{ revenue }}</td>
 
-                            </tr>
-                            <tr>
-                                <th>Net Income/Loss</th>
-                                <td>{{ income }}</td>
-                            </tr>
-                            <tr>
-                                <th>Dividend Rate</th>
-                                <td>{{ dividend_rate }} ({{ dividend_yield }})</td>
-                            </tr>
-                            <tr>
-                                <th>Payout Ratio</th>
-                                <td>{{ payout_ratio }}</td>
-                            </tr>
-                        </table>
+                        </tr>
+                        <tr>
+                            <th>Net Income/Loss</th>
+                            <td>{{ income }}</td>
+                        </tr>
+                        <tr>
+                            <th>Dividend Rate</th>
+                            <td>{{ dividend_rate }} ({{ dividend_yield }})</td>
+                        </tr>
+                        <tr>
+                            <th>Payout Ratio</th>
+                            <td>{{ payout_ratio }}</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
             <div class="card-container col-md-6 col-lg-3">
@@ -175,7 +176,7 @@
                     <h3>Sentiment</h3>
                     <table class="table">
                         <tr class="text-success">
-                            <th ><i class="fas fa-arrow-up"></i> Bulls</i></th>
+                            <th><i class="fas fa-arrow-up"></i> Bulls</i></th>
                             <td>{{ bulls_num }}</td>
 
                         </tr>
@@ -215,9 +216,11 @@
                             {{ comment.body | linebreaksbr }}
                             <p>
                                 {% if comment.sentiment == 'BULL' %}
-                                <p>Sentiment: <span class="text-success fw-bold"><i class="fas fa-arrow-up"></i> Bullish</span></p>
+                                <p>Sentiment: <span class="text-success fw-bold"><i class="fas fa-arrow-up"></i>
+                                        Bullish</span></p>
                                 {% elif comment.sentiment == 'BEAR' %}
-                                <p>Sentiment: <span class="text-danger fw-bold"><i class="fas fa-arrow-down"></i> Bearish</span></p>
+                                <p>Sentiment: <span class="text-danger fw-bold"><i class="fas fa-arrow-down"></i>
+                                        Bearish</span></p>
                                 {% else %}
                                 <p>Sentiment: <span class="fw-bold"><i class="fas fa-shield-alt"></i> Hold</span></p>
                                 {% endif %}
@@ -225,7 +228,7 @@
                             <div class="row">
                                 <div class="col-md-8 post-name-time">
                                     <p class="fw-bold">
-                                        {{ comment.name }} on 
+                                        {{ comment.name }} on
                                         <span>
                                             {{ comment.created_on }}
                                         </span>
@@ -250,7 +253,8 @@
                         {% else %}
                         <p>No comments, be the first one!</p>
                         {% if not user.is_authenticated %}
-                        <p>To post a comment, <a href="{% url 'account_login' %}">Log in</a> to our site! <br> If you do not have an account, please <a href="{% url 'account_signup' %}">Register</a> here.</p>
+                        <p>To post a comment, <a href="{% url 'account_login' %}">Log in</a> to our site! <br> If you do
+                            not have an account, please <a href="{% url 'account_signup' %}">Register</a> here.</p>
                         {% endif %}
                         {% endif %}
                     </div>
@@ -279,7 +283,7 @@
                         {% csrf_token %}
                         <button type="submit" class="btn btn-lg btn-post-comment fw-bold">Submit</button>
                     </form>
-                    
+
 
                 </div>
                 {% endif %}

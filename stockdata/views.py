@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.views.generic import DeleteView, UpdateView
+from django.views.generic.base import TemplateView
 from django.utils.decorators import method_decorator
 from django.utils.safestring import mark_safe
 from django.contrib.auth.decorators import login_required
@@ -31,6 +32,8 @@ class StockList(generic.ListView):
     template_name = 'index.html'
     paginate_by = 6
 
+class AboutTemplateView(TemplateView):
+    template_name = 'about.html'
 
 class StockDetail(View):
 
@@ -334,6 +337,7 @@ class CommentEdit(UpdateView):
         """
         StockDetail.comment_edited = True
         return reverse("stock_detail", kwargs={"slug": self.object.stock.slug})
+
 
 
 class Percent(float):
