@@ -104,8 +104,6 @@ class StockDetail(View):
             },
         )
 
-        
-
     def sentiment_analysis(self, stockinfo):
         '''
         Function that counts the number of bull and bear sentiment
