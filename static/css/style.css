@@ -214,6 +214,7 @@ footer hr {
 
 .btn-post-comment:hover {
     background-color: rgb(60, 179, 113, 0.3);
+    font-weight: bold;
 } 
 
 #post-comment-card {
