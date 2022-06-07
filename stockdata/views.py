@@ -64,33 +64,6 @@ class StockDetail(View):
         self.get_polygon_last_trade(stockinfo.ticker)
         self.get_yfinance_figures(stockinfo.ticker)
         
-        # if there is a Polygon API error, set trade data and perf
-        # to None
-        if self.api_error:
-            self.last_trade_price = None
-            self.last_trade_datetime = None
-            self.daily_perf = None
-
-        # if there is a yfinance error, set all the related 
-        # variables to None
-        if self.yfinance_error:
-            self.price_earnings = None
-            self.price_to_fcf = None
-            self.profit_margin = None
-            self.debt_to_equity = None
-            self.sector = None
-            self.market_cap_formatted = None
-            self.high_52w = None
-            self.low_52w = None
-            self.avg_vol = None
-            self.revenue = None
-            self.income = None
-            self.dividend_rate = None
-            self.dividend_yield = None
-            self.payout_ratio = None
-            self.currency = None
-
-
         # If data from Polygon API is received, run get_chart_data to retrieve YTD stock and price data in context
         # otherwhise set the context to None
         if self.api_error != True:
@@ -113,6 +86,7 @@ class StockDetail(View):
         else:
             self.comment_deleted_var = False
 
+        self.set_error_variables()
 
         return render(
             request,
@@ -306,7 +280,36 @@ class StockDetail(View):
 
         if len(self.stock_data) == 0:
             self.yfinance_error = True
-        
+
+    def set_error_variables(self):
+        # if there is a Polygon API error, set trade data and perf
+        # to None
+        if self.api_error:
+            self.last_trade_price = None
+            self.last_trade_datetime = None
+            self.daily_perf = None
+
+        # if there is a yfinance error, set all the related 
+        # variables to None
+        if self.yfinance_error:
+            self.price_earnings = None
+            self.price_to_fcf = None
+            self.profit_margin = None
+            self.debt_to_equity = None
+            self.sector = None
+            self.market_cap_formatted = None
+            self.high_52w = None
+            self.low_52w = None
+            self.avg_vol = None
+            self.revenue = None
+            self.income = None
+            self.dividend_rate = None
+            self.dividend_yield = None
+            self.payout_ratio = None
+            self.currency = None
+
+
+
     def post(self, request, slug, *args, **kwargs):
         """
         Post method to post the comment.
@@ -327,10 +330,21 @@ class StockDetail(View):
         else:
             comment_form = CommentForm()
 
+        self.api_error = False
+        self.yfinance_error = False
+
         self.sentiment_analysis(stockinfo)
         self.get_polygon_last_trade(stockinfo.ticker)
         self.get_yfinance_figures(stockinfo.ticker)
-        self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", self.previous_day)
+
+        # If data from Polygon API is received, run get_chart_data to retrieve YTD stock and price data in context
+        # otherwhise set the context to None
+        if self.api_error != True:
+            self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", self.previous_day)
+        else:
+            self.context = None
+
+        self.set_error_variables()
 
         return render(
             request,
@@ -363,6 +377,8 @@ class StockDetail(View):
                 "payout_ratio": self.payout_ratio,
                 "currency": self.currency,
                 "context": self.context,
+                "api_error": self.api_error,
+                "yfinance_error": self.yfinance_error,
             },
         )
 
