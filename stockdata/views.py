@@ -35,6 +35,15 @@ class StockList(generic.ListView):
 class AboutTemplateView(TemplateView):
     template_name = 'about.html'
 
+class Page403(TemplateView):
+    template_name = '403.html'
+
+class Page404(TemplateView):
+    template_name = '404.html'
+
+class Page500(TemplateView):
+    template_name = '500.html'
+
 class StockDetail(View):
 
     comment_edited = False
@@ -187,7 +196,16 @@ class StockDetail(View):
         else:
             self.price_to_fcf = round(self.market_cap / free_cash_flow,2)
         self.profit_margin = Percent(self.stock_data["defaultKeyStatistics"]['profitMargins'])
-        self.debt_to_equity = round(self.stock_data["financialData"]['debtToEquity']/100,2)
+        try:
+            self.debt_to_equity = round(self.stock_data["financialData"]['debtToEquity']/100,2)
+        except TypeError:
+            self.debt_to_equity = "N/A"
+
+    def error_handler(self, formula):
+        try:
+            return formula
+        except TypeError:
+            return "N/A"
 
         
 

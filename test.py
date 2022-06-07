@@ -35,6 +35,7 @@ def get_historical_prices():
 
 def get_stock_info(ticker):
         stock_data = yf.Ticker(ticker).stats()
-        print(stock_data)
+        print(stock_data["summaryProfile"]["longBusinessSummary"])
+        print(stock_data["financialData"]['debtToEquity'])
 
-get_stock_info("INTC")
+get_stock_info("hd")
