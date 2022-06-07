@@ -31,7 +31,7 @@ class StockList(generic.ListView):
     model = StockInfo
     queryset = StockInfo.objects.filter(status=1).order_by("-created_on")
     template_name = 'index.html'
-    paginate_by = 6
+    paginate_by = 8
 
 class AboutTemplateView(TemplateView):
     template_name = 'about.html'
@@ -211,7 +211,10 @@ class StockDetail(View):
             self.payout_ratio = Percent(self.stock_data["summaryDetail"]["payoutRatio"])
 
             # Multiples
-            self.price_earnings = round(self.stock_data["summaryDetail"]['trailingPE'], 2)
+            try:
+                self.price_earnings = round(self.stock_data["summaryDetail"]['trailingPE'], 2)
+            except KeyError:
+                self.price_earnings = "-"
             free_cash_flow = self.stock_data["financialData"]['freeCashflow']
             if free_cash_flow is None or free_cash_flow <= 0:
                 self.price_to_fcf = "-"

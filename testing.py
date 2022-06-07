@@ -34,8 +34,8 @@ def get_historical_prices():
 
 
 def get_stock_info(ticker):
-        stock_data = yf.Ticker(ticker).stats()
-        if len(stock_data) == 0:
-            print('è none')
+    stock_data = yf.Ticker(ticker).stats()
+    print(stock_data["summaryProfile"]["longBusinessSummary"])
 
-get_stock_info("hdios")
+
+get_stock_info("DOW")
