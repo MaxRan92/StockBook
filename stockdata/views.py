@@ -227,7 +227,10 @@ class StockDetail(View):
         
         df = pd.DataFrame(trades)
         dates = df["timestamp"].tolist()
+        self.last_trade_datetime_converted = str(self.last_trade_datetime.date())
+        dates.append(self.last_trade_datetime_converted)
         prices = df["close"].tolist()
+        prices.append(self.last_trade_price)
         self.context = {"dates": mark_safe(json.dumps(dates)), "prices": mark_safe(json.dumps(prices))}
 
 
