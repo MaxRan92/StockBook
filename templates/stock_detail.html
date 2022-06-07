@@ -10,7 +10,7 @@
             <div class="col-md-12 detail-image-container">
                 <!-- The featured image URL goes in the src attribute -->
                 {% if "placeholder" in stockinfo.featured_image.url %}
-                <img src="" width="100%">
+                <img src="{% static 'images/logo.png' %}" width="100%">
                 {% else %}
                 <img src=" {{ stockinfo.logo_image.url }}" width="100%">
                 {% endif %}
