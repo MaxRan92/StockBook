@@ -219,3 +219,9 @@ footer hr {
 #post-comment-card {
     height: auto;
 }
+
+/* About page */
+
+.element-card img {
+    width: 100%;
+}
