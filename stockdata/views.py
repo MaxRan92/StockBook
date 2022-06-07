@@ -190,30 +190,59 @@ class StockDetail(View):
 
             # Overview
             # Currency
-            self.currency = self.stock_data["summaryDetail"]["currency"]
+            self.currency = self.yfinance_data_handler("summaryDetail", "currency")
             # Sector
-            self.sector = self.stock_data["summaryProfile"]["sector"]
+            self.sector = self.yfinance_data_handler("summaryProfile", "sector")
             # Market Cap
-            self.market_cap = self.stock_data["price"]["marketCap"]
-            self.market_cap_formatted = millify(self.market_cap)
+            self.market_cap = self.yfinance_data_handler("price", "marketCap")
+            try:
+                self.market_cap_formatted = millify(self.market_cap)
+            except (ValueError, TypeError):
+                self.market_cap_formatted = "-"
             # High-Low 52 Weeks
-            self.high_52w = self.stock_data["summaryDetail"]["fiftyTwoWeekHigh"]
-            self.low_52w = self.stock_data["summaryDetail"]["fiftyTwoWeekLow"]
+            self.high_52w = self.yfinance_data_handler("summaryDetail", "fiftyTwoWeekHigh")
+            self.low_52w = self.yfinance_data_handler("summaryDetail", "fiftyTwoWeekLow")
             # Average Volume
-            self.avg_vol = '{:,}'.format(self.stock_data["summaryDetail"]["averageVolume"])
+            self.avg_vol = self.yfinance_data_handler("summaryDetail", "averageVolume")
+            try:
+                self.avg_vol = '{:,}'.format(self.avg_vol)
+            except (ValueError, TypeError):
+                pass
 
             # Financials
-            self.revenue = millify(self.stock_data["financialData"]["totalRevenue"])
-            self.income = millify(self.stock_data["defaultKeyStatistics"]["netIncomeToCommon"])
-            self.dividend_rate = self.stock_data["summaryDetail"]["dividendRate"]
-            self.dividend_yield = self.stock_data["summaryDetail"]["dividendYield"]
+            # Revenue
+            self.revenue = self.yfinance_data_handler("financialData", "totalRevenue")
+            try:
+                self.revenue = millify(self.revenue)
+            except (ValueError, TypeError):
+                pass
+            # Income
+            self.income = self.yfinance_data_handler("defaultKeyStatistics", "netIncomeToCommon")
+            try:
+                self.income = millify(self.income)
+            except (ValueError, TypeError):
+                pass
+            # Dividend Yield and Dividend Rate
+            self.dividend_rate = self.yfinance_data_handler("summaryDetail", "dividendRate")
+            self.dividend_yield = self.yfinance_data_handler("summaryDetail", "dividendYield")
             if self.dividend_rate is None:
-                self.dividend_rate = 0
+                self.dividend_rate = "-"
             if self.dividend_yield is None:
-                self.dividend_yield = 0
-            self.dividend_rate = round(self.dividend_rate, 2)
-            self.dividend_yield = Percent(self.dividend_yield)
-            self.payout_ratio = Percent(self.stock_data["summaryDetail"]["payoutRatio"])
+                self.dividend_yield = "-"
+            try:
+                self.dividend_rate = round(self.dividend_rate, 2)
+            except (ValueError, TypeError):
+                pass
+            try:
+                self.dividend_yield = Percent(self.dividend_yield)
+            except (ValueError, TypeError):
+                pass
+            # Payout Ratio
+            self.payout_ratio = self.yfinance_data_handler("summaryDetail", "payoutRatio")
+            try:
+                self.payout_ratio = Percent(self.payout_ratio)
+            except (ValueError, TypeError):
+                pass
 
             # Multiples
             # Price/Earnings
@@ -223,7 +252,10 @@ class StockDetail(View):
             # Price/FCF
             free_cash_flow = self.yfinance_data_handler("financialData", "freeCashflow")
             if (type(free_cash_flow) == int or type(free_cash_flow) == float) and free_cash_flow > 0:
-                self.price_to_fcf = round(self.market_cap / free_cash_flow, 2)
+                if type(self.market_cap) == int or type(self.market_cap) == float:
+                    self.price_to_fcf = round(self.market_cap / free_cash_flow, 2)
+                else:
+                    self.price_to_fcf = "-"
             else: 
                 self.price_to_fcf = "-"
             # Profit Margin
