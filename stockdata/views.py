@@ -22,7 +22,6 @@ from .forms import CommentForm, EditForm
 from polygon import RESTClient
 
 
-
 MILLNAMES = ['',' k',' M',' Bn',' Tn']
 
 

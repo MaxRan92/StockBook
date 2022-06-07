@@ -3,14 +3,17 @@
 
 {% block content %}
 <div class="container">
-
     <div class="card-container">
-        <img src=""
-            class="" alt="404 numbers" style="width: 200px"><br><br>
+        <div class="element-card">
+            <div class="col-12 fw-bold fs-5 text-center">
+                Oops! Looks like the page you're looking for doesn't exist.<br><br>
 
-        Looks like we can't show that page.<br><br>
-
-        <a href="{% url 'home' %}">Return to home</a>
+                <a href="{% url 'home' %}">Return to home</a>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock content %}
+
+
+
