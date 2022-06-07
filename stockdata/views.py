@@ -3,6 +3,7 @@ import json
 import pandas as pd
 import yfinance as yf
 import pandas_market_calendars as mcal
+import pdb
 from stockbook.settings import POLYGON_API_KEY as API_KEY
 from flask import url_for, render_template
 from datetime import datetime, timedelta
@@ -19,8 +20,8 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from .models import StockInfo, Comment
 from .forms import CommentForm, EditForm
-from polygon import RESTClient
-from requests.exceptions import ConnectionError, Timeout, TooManyRedirects, RequestException
+from polygon import RESTClient, exceptions
+from requests.exceptions import ConnectionError, Timeout, TooManyRedirects, RequestException, HTTPError
 
 
 MILLNAMES = ['', ' k', ' M', ' Bn', ' Tn']
@@ -56,10 +57,25 @@ class StockDetail(View):
         all_comments = Comment.objects.filter(approved=True)
         comments = stockinfo.comments.filter(approved=True).order_by('-created_on')
         
+        self.api_error = False
+
         self.sentiment_analysis(stockinfo)
         self.get_polygon_last_trade(stockinfo.ticker)
         self.get_yfinance_figures(stockinfo.ticker)
-        self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", self.previous_day)
+        
+        # if there is a Polygon API error, set trade data and perf
+        # to None
+        if self.api_error == True:
+            self.last_trade_price = None
+            self.last_trade_datetime = None
+            self.daily_perf = None
+
+        # If data from Polygon API is received, run get_chart_data to retrieve YTD stock and price data in context
+        # otherwhise set the context to None
+        if self.api_error != True:
+            self.get_chart_data(stockinfo.ticker, "day", "2021-12-31", self.previous_day)
+        else:
+            self.context = None
 
         self.comment_edited_var = False
         self.comment_deleted_var = False
@@ -134,28 +150,39 @@ class StockDetail(View):
         performance relative to previous close
         '''
 
-         # Get last trade price with datetime
+        # Get last trade price with datetime
         self.get_last_trade_data(ticker)
-        self.last_trade_price = self.last_trade_data.price
-        self.last_trade_timestamp = self.last_trade_data.participant_timestamp
-        self.last_trade_datetime = datetime.fromtimestamp(self.last_trade_timestamp/1e9)
+        # If trade data from Polygon API is received, return last trade price, datetime and daily perf
+        # Otherwise set them to None 
+        if self.last_trade_data != None:
+            self.last_trade_price = self.last_trade_data.price  
+            self.last_trade_timestamp = self.last_trade_data.participant_timestamp
+            self.last_trade_datetime = datetime.fromtimestamp(self.last_trade_timestamp/1e9)
 
-        # Get previous day close price
-        nyse = mcal.get_calendar('NYSE')
-        market_open_days = nyse.valid_days(start_date='2010-12-31', end_date='2030-12-31')
+            # Get previous day close price
+            nyse = mcal.get_calendar('NYSE')
+            market_open_days = nyse.valid_days(start_date='2010-12-31', end_date='2030-12-31')
 
-        market_open = False
-        while market_open is False:
-            for i in range(10):
-                self.previous_day = self.last_trade_datetime - timedelta(i+1)
-                if self.previous_day.strftime('%Y-%m-%d') in market_open_days:
-                    market_open = True
-                    break
+            market_open = False
+            while market_open is False:
+                for i in range(10):
+                    self.previous_day = self.last_trade_datetime - timedelta(i+1)
+                    if self.previous_day.strftime('%Y-%m-%d') in market_open_days:
+                        market_open = True
+                        break
 
-        self.previous_day = self.previous_day.strftime("%Y-%m-%d")
-        self.get_daily_aggs(ticker, "day", self.previous_day, self.previous_day)
-        last_close = self.aggs[0].close
-        self.daily_perf = Percent(self.last_trade_price / last_close - 1)
+            self.previous_day = self.previous_day.strftime("%Y-%m-%d")
+            self.get_daily_aggs(ticker, "day", self.previous_day, self.previous_day)
+            # if aggregates data from Polygon API is received, return last close and calculate performance,
+            # otherwise return API error
+            if self.aggs != None:
+                last_close = self.aggs[0].close
+                self.daily_perf = Percent(self.last_trade_price / last_close - 1)
+            else:
+                self.api_error = True
+        else:
+            self.api_error = True
+
         
 
     def get_yfinance_figures(self, ticker):
@@ -235,19 +262,28 @@ class StockDetail(View):
 
 
     def get_last_trade_data(self, ticker):
-        client = RESTClient(API_KEY)
-
+        '''
+        Function that connects with Polygon API to retrieve
+        last trade data.
+        If error occurs, returns none variable.
+        '''
         try:
+            client = RESTClient(API_KEY)
             self.last_trade_data = client.get_last_trade(ticker, params=None, raw=False)
-        except (ConnectionError, Timeout, TooManyRedirects, RequestException) as e:
-            print(e)
+        except (ConnectionError, Timeout, TooManyRedirects, RequestException, HTTPError, exceptions.BadResponse) as e:
+            self.last_trade_data = None
 
     def get_daily_aggs(self, ticker, timespan, start_date, end_date):
-        client = RESTClient(API_KEY)
+        '''
+        Function that connects with Polygon API to retrieve
+        data aggregates from start_date to end_date.
+        If error occurs, returns none variable.
+        '''
         try:
+            client = RESTClient(API_KEY)
             self.aggs = client.get_aggs(ticker, 1, timespan, start_date, end_date)
-        except (ConnectionError, Timeout, TooManyRedirects, RequestException) as e:
-            print(e)
+        except (ConnectionError, Timeout, TooManyRedirects, RequestException, HTTPError, exceptions.BadResponse) as e:
+            self.aggs = None
 
 
     def get_stock_info(self, ticker):

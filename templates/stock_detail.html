@@ -21,17 +21,21 @@
                 <div class="element-card">
                     <!-- asset title goes in these h1 tags -->
                     <h1 class="fw-bold">{{ stockinfo.title }} ({{ stockinfo.ticker }})</h1>
-                    {% if daily_perf > 0 %}
-                    <h3 class="fw-bold">Last Price: <span class="text-success">{{ last_trade_price }} {{ currency }}
-                            ({{ daily_perf }})</span></h3>
-                    {% elif daily_perf == 0 %}
-                    <h3 class="fw-bold">Last Price: <span>{{ last_trade_price }} {{ currency }}
-                            ({{ daily_perf }})</span></h3>
+                    {% if last_trade_price %}
+                        {% if daily_perf > 0 %}
+                        <h3 class="fw-bold">Last Price: <span class="text-success">{{ last_trade_price }} {{ currency }}
+                                ({{ daily_perf }})</span></h3>
+                        {% elif daily_perf == 0 %}
+                        <h3 class="fw-bold">Last Price: <span>{{ last_trade_price }} {{ currency }}
+                                ({{ daily_perf }})</span></h3>
+                        {% else %}
+                        <h3 class="fw-bold">Last Price: <span class="text-danger">{{ last_trade_price }} {{ currency }}
+                                ({{ daily_perf }})</span></h3>
+                        {% endif %}
+                        <p>Currency: {{ currency}}<br>Updated: <span>{{ last_trade_datetime }}</span></p>
                     {% else %}
-                    <h3 class="fw-bold">Last Price: <span class="text-danger">{{ last_trade_price }} {{ currency }}
-                            ({{ daily_perf }})</span></h3>
+                            <p>Unable to get prices due to system maintenance</p>
                     {% endif %}
-                    <p>Currency: {{ currency}}<br>Updated: <span>{{ last_trade_datetime }}</span></p>
                 </div>
             </div>
             <div class="card-container col-md-8 mt-3">
@@ -44,7 +48,7 @@
     </div>
 </div>
 
-
+{% if last_trade_price %}
 <div class="chart-area">
     <div class="container">
         <div class="row">
@@ -95,6 +99,8 @@
         </div>
     </div>
 </div>
+{% endif %}
+
 
 <div class="analysis-area">
     <div class="container">
