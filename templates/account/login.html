@@ -8,28 +8,38 @@
 {% block content %}
 
 <div class="container">
-  <div class="row">
-    <div class="col-md-8 mt-3 offset-md-2">
-      <h3>{% trans "Sign In" %}</h3>
+  <div class="card-container my-5">
 
-      <p>{% blocktrans %}Welcome to StockInfo. To leave a comment or like a post, please log in. If you
-        have not created an account yet, then <a class="link" href="{{ signup_url }}">sign up</a>
-        first.{% endblocktrans %}</p>
+    <div class="element-card">
+
+      <div class="row">
+        <div class="col-md-8 mt-3 offset-md-2">
+          <h3 class="fw-bold fs-3">{% trans "Sign In" %}</h3>
+
+          <p>{% blocktrans %}Welcome to StockBook. To leave a comment or like a post, please log in. If you
+            have not created an account yet, then <a class="link" href="{{ signup_url }}">sign up</a>
+            first.{% endblocktrans %}</p>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8 mt-3 offset-md-2">
+          <form class="login" method="POST" action="{% url 'account_login' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            <button class="btn right btn-post-comment" type="submit">{% trans "Sign In" %}</button>
+          </form>
+        </div>
+      </div>
+
 
     </div>
+
   </div>
-  <div class="row">
-    <div class="col-md-8 mt-3 offset-md-2">
-      <form class="login" method="POST" action="{% url 'account_login' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        {% if redirect_field_value %}
-        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-        {% endif %}
-        <button class="btn right" type="submit">{% trans "Sign In" %}</button>
-      </form>
-    </div>
-  </div>
+
 
 </div>
 
