@@ -58,6 +58,7 @@ class StockDetail(View):
         comments = stockinfo.comments.filter(approved=True).order_by('-created_on')
         
         self.api_error = False
+        self.yfinance_error = False
 
         self.sentiment_analysis(stockinfo)
         self.get_polygon_last_trade(stockinfo.ticker)
@@ -65,10 +66,30 @@ class StockDetail(View):
         
         # if there is a Polygon API error, set trade data and perf
         # to None
-        if self.api_error == True:
+        if self.api_error:
             self.last_trade_price = None
             self.last_trade_datetime = None
             self.daily_perf = None
+
+        # if there is a yfinance error, set all the related 
+        # variables to None
+        if self.yfinance_error:
+            self.price_earnings = None
+            self.price_to_fcf = None
+            self.profit_margin = None
+            self.debt_to_equity = None
+            self.sector = None
+            self.market_cap_formatted = None
+            self.high_52w = None
+            self.low_52w = None
+            self.avg_vol = None
+            self.revenue = None
+            self.income = None
+            self.dividend_rate = None
+            self.dividend_yield = None
+            self.payout_ratio = None
+            self.currency = None
+
 
         # If data from Polygon API is received, run get_chart_data to retrieve YTD stock and price data in context
         # otherwhise set the context to None
@@ -126,6 +147,8 @@ class StockDetail(View):
                 "payout_ratio": self.payout_ratio,
                 "currency": self.currency,
                 "context": self.context,
+                "api_error": self.api_error,
+                "yfinance_error": self.yfinance_error,
             },
         )
 
@@ -154,7 +177,7 @@ class StockDetail(View):
         self.get_last_trade_data(ticker)
         # If trade data from Polygon API is received, return last trade price, datetime and daily perf
         # Otherwise set them to None 
-        if self.last_trade_data != None:
+        if not self.api_error:
             self.last_trade_price = self.last_trade_data.price  
             self.last_trade_timestamp = self.last_trade_data.participant_timestamp
             self.last_trade_datetime = datetime.fromtimestamp(self.last_trade_timestamp/1e9)
@@ -175,14 +198,8 @@ class StockDetail(View):
             self.get_daily_aggs(ticker, "day", self.previous_day, self.previous_day)
             # if aggregates data from Polygon API is received, return last close and calculate performance,
             # otherwise return API error
-            if self.aggs != None:
-                last_close = self.aggs[0].close
-                self.daily_perf = Percent(self.last_trade_price / last_close - 1)
-            else:
-                self.api_error = True
-        else:
-            self.api_error = True
-
+            last_close = self.aggs[0].close
+            self.daily_perf = Percent(self.last_trade_price / last_close - 1)
         
 
     def get_yfinance_figures(self, ticker):
@@ -192,48 +209,46 @@ class StockDetail(View):
         data
         '''
         # Get stock info from YFinance
+
         self.get_stock_info(ticker)
 
-        # Overview
-        self.currency = self.stock_data["summaryDetail"]["currency"]
-        self.sector = self.stock_data["summaryProfile"]["sector"]
-        self.market_cap = self.stock_data["price"]["marketCap"]
-        self.market_cap_formatted = millify(self.market_cap)
-        self.high_52w = self.stock_data["summaryDetail"]["fiftyTwoWeekHigh"]
-        self.low_52w = self.stock_data["summaryDetail"]["fiftyTwoWeekLow"]
-        self.avg_vol = '{:,}'.format(self.stock_data["summaryDetail"]["averageVolume"])
+        if not self.yfinance_error:
 
-        # Financials
-        self.revenue = millify(self.stock_data["financialData"]["totalRevenue"])
-        self.income = millify(self.stock_data["defaultKeyStatistics"]["netIncomeToCommon"])
-        self.dividend_rate = self.stock_data["summaryDetail"]["dividendRate"]
-        self.dividend_yield = self.stock_data["summaryDetail"]["dividendYield"]
-        if self.dividend_rate is None:
-            self.dividend_rate = 0
-        if self.dividend_yield is None:
-            self.dividend_yield = 0
-        self.dividend_rate = round(self.dividend_rate, 2)
-        self.dividend_yield = Percent(self.dividend_yield)
-        self.payout_ratio = Percent(self.stock_data["summaryDetail"]["payoutRatio"])
+            # Overview
+            self.currency = self.stock_data["summaryDetail"]["currency"]
+            self.sector = self.stock_data["summaryProfile"]["sector"]
+            self.market_cap = self.stock_data["price"]["marketCap"]
+            self.market_cap_formatted = millify(self.market_cap)
+            self.high_52w = self.stock_data["summaryDetail"]["fiftyTwoWeekHigh"]
+            self.low_52w = self.stock_data["summaryDetail"]["fiftyTwoWeekLow"]
+            self.avg_vol = '{:,}'.format(self.stock_data["summaryDetail"]["averageVolume"])
 
-        # Multiples
-        self.price_earnings = round(self.stock_data["summaryDetail"]['trailingPE'], 2)
-        free_cash_flow = self.stock_data["financialData"]['freeCashflow']
-        if free_cash_flow is None or free_cash_flow <= 0:
-            self.price_to_fcf = "-"
-        else:
-            self.price_to_fcf = round(self.market_cap / free_cash_flow,2)
-        self.profit_margin = Percent(self.stock_data["defaultKeyStatistics"]['profitMargins'])
-        try:
-            self.debt_to_equity = round(self.stock_data["financialData"]['debtToEquity']/100,2)
-        except TypeError:
-            self.debt_to_equity = "N/A"
+            # Financials
+            self.revenue = millify(self.stock_data["financialData"]["totalRevenue"])
+            self.income = millify(self.stock_data["defaultKeyStatistics"]["netIncomeToCommon"])
+            self.dividend_rate = self.stock_data["summaryDetail"]["dividendRate"]
+            self.dividend_yield = self.stock_data["summaryDetail"]["dividendYield"]
+            if self.dividend_rate is None:
+                self.dividend_rate = 0
+            if self.dividend_yield is None:
+                self.dividend_yield = 0
+            self.dividend_rate = round(self.dividend_rate, 2)
+            self.dividend_yield = Percent(self.dividend_yield)
+            self.payout_ratio = Percent(self.stock_data["summaryDetail"]["payoutRatio"])
 
-    def error_handler(self, formula):
-        try:
-            return formula
-        except TypeError:
-            return "N/A"
+            # Multiples
+            self.price_earnings = round(self.stock_data["summaryDetail"]['trailingPE'], 2)
+            free_cash_flow = self.stock_data["financialData"]['freeCashflow']
+            if free_cash_flow is None or free_cash_flow <= 0:
+                self.price_to_fcf = "-"
+            else:
+                self.price_to_fcf = round(self.market_cap / free_cash_flow,2)
+            self.profit_margin = Percent(self.stock_data["defaultKeyStatistics"]['profitMargins'])
+            try:
+                self.debt_to_equity = round(self.stock_data["financialData"]['debtToEquity']/100,2)
+            except TypeError:
+                self.debt_to_equity = "N/A"
+
 
         
 
@@ -247,7 +262,7 @@ class StockDetail(View):
         self.get_daily_aggs(ticker, interval, start_date, end_date)
         trades = self.aggs
 
-        for x in range (0, len(trades)):
+        for x in range(0, len(trades)):
             date_unix_msec = trades[x].timestamp
             date_converted = datetime.fromtimestamp(date_unix_msec // 1000).date()
             trades[x].timestamp = str(date_converted)
@@ -271,7 +286,7 @@ class StockDetail(View):
             client = RESTClient(API_KEY)
             self.last_trade_data = client.get_last_trade(ticker, params=None, raw=False)
         except (ConnectionError, Timeout, TooManyRedirects, RequestException, HTTPError, exceptions.BadResponse) as e:
-            self.last_trade_data = None
+            self.api_error = True
 
     def get_daily_aggs(self, ticker, timespan, start_date, end_date):
         '''
@@ -283,11 +298,14 @@ class StockDetail(View):
             client = RESTClient(API_KEY)
             self.aggs = client.get_aggs(ticker, 1, timespan, start_date, end_date)
         except (ConnectionError, Timeout, TooManyRedirects, RequestException, HTTPError, exceptions.BadResponse) as e:
-            self.aggs = None
+            self.api_error = True
 
 
     def get_stock_info(self, ticker):
         self.stock_data = yf.Ticker(ticker).stats()
+
+        if len(self.stock_data) == 0:
+            self.yfinance_error = True
         
     def post(self, request, slug, *args, **kwargs):
         """
