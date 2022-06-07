@@ -4,13 +4,19 @@
 <!--If user is authenticated render view to update review.-->
 <div class="container">
     {% if user.is_authenticated %}
-        <h1>Edit your Comment: </h1>
-        <form method="post">
-            {{ form.media }}
-            {{ form | crispy }}
-            {% csrf_token %}
-            <button class="submit-btn btn"type="submit">Post</button>
-        </form>
+    <div class="card-container my-5">
+        <div class="element-card">
+            <div class="col-12">
+                <h3 class="fw-bold fs-3">Edit your Comment: </h3>
+                <form method="post">
+                    {{ form.media }}
+                    {{ form | crispy }}
+                    {% csrf_token %}
+                    <button class="submit-btn btn btn-post-comment" type="submit">Post</button>
+                </form>
+            </div>
+        </div>
+    </div>
     {% endif %}
 </div>
 {%endblock%}
