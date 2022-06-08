@@ -1,5 +1,7 @@
 # StockBook - A Financial Informative Website For Stock Markets
 
+## Author
+Massimo Ranalli
 
 ## Introduction
 
@@ -19,11 +21,17 @@ A live demo of the website can be found <a href="https://stockbook22.herokuapp.c
 
 ---
 
+
+## Version Control 
+Github was used to track the progress of this project. The very initial commitments were on a <a href="https://github.com/MaxRan92/FinBlog"><strong>previous repository</strong></a>, whose database ended up being compromised. I opted for restarting the project due to time contraints and all the commits may be found <a href="https://github.com/MaxRan92/StockBook/commits/main"><strong>here</strong></a>.
+The issue has now been addressed (accidentally populated additional index field in database with same value string), and I am currenty doing research to understand how to solve it. 
+
+
 ## User Experience (UX)
 
 * ### Vision  
-    StockBook seeks to condense a company's fundamentals, stock performance and community sentiment in one website. To do so, key performance indicators, live data and time series must be represented accessing certified data providers. The website should be intuitive and the sometimes big amount of data should be displayed in a clear, schematic and understandable way.
-    Users should be inspired and encouraged to give recommendations, which will create indicators useful to understand the overall community sentiment.
+StockBook seeks to condense a company's fundamentals, stock performance and community sentiment in one website. To do so, key performance indicators, live data and time series must be represented accessing certified data providers. The website should be intuitive and the sometimes big amount of data should be displayed in a clear, schematic and understandable way.
+Users should be inspired and encouraged to give recommendations, which will create indicators useful to understand the overall community sentiment.
 
 * ### Aims
     The primary aim is to provide users with an useful tool to analyse and judge a company valuation in few moments. Moreover users should be not only data receiver, but also recommendation maker. The website provides quantitative data, the community responds with qualitative comments.
@@ -49,4 +57,20 @@ A live demo of the website can be found <a href="https://stockbook22.herokuapp.c
  15. As a **Site Admin** I can **approve comments** so that **they can be displayed on the site**
 
 
- 
+## Design
+
+ * ### Structure
+
+     - Home: the landing page of the site, containing the stocks featured in the site represented with proper cards in a bootstrap grid system. Each card contains the logo of the company, its name and a brief summary. 
+     - Stock Detail: the page that contains all the insights about the selected stocks:
+       - Logo
+       - Long description of the stock
+       - Live trade price data
+       - YTD historical performance chart
+       - Fundamentals cards
+       - Comment section
+
+* ### Wireframes
+
+![Wireframe-home](docs/images/wireframe-home.png)
+![Wireframe-stockdetail](docs/images/wireframe-stock-detail.png)
