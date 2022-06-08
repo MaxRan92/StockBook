@@ -236,7 +236,7 @@ Every Stock Detail page could have a news feed with all the relevant news regard
 
 ### Local 
 
-- Step 1: Go the git hub repo: https://github.com/MaxRan92/StockBook
+- Step 1: Go the GitHub repo: https://github.com/MaxRan92/StockBook
 
 - Step 2: Press the green Gitpod button. 
 
@@ -246,7 +246,7 @@ Every Stock Detail page could have a news feed with all the relevant news regard
   - os.environ["DATABASE_URL"] = "YOUR_VALUE"
   - os.environ["SECRET_KEY"] = "YOUR_VALUE"
   - os.environ["CLOUDINARY_URL"] = "YOUR_VALUE" 
-  - Please notice you should also insert a poligon API key: os.environ["POLYGON_API_KEY"] = "--API KEY--". Unfortunately the service is premium and data will not be downloaded without a proper key. In any case, the code should be able to manage the absence of an API key and all the remaining functionalities will remain active.
+  - Please notice you should also insert a poligon API key: os.environ["POLYGON_API_KEY"] = "--API KEY--". Unfortunately the service is premium and data will not be downloaded without a <a href="https://polygon.io/pricing"><strong>Developer subscription</strong></a> and its key. In any case, the code is tested to be able to manage the absence of an API key and all the remaining functionalities will remain active.
 
 - Step 5: Install all requirements by typing: pip3 install -r requirements.txt into your terminal. 
 
@@ -274,14 +274,14 @@ The site was deployed to Heroku. The steps to deploy are as follows:
   - After finishing you are ready to deploy. There is the proper functionality in the 'deploy' tab which needs to connect GitHub. However, as of the date of this writing, the GitHub connection is not functioning.
 
   - To solve it, you can deploy via Gitpod terminal. To do so:
-     - To log in to Heroku from GitPod, enter: "heroku login -i"
-     - Once authenticated, enter: "heroku git:remote -a {app_name}", where app name is the name given on Heroku
-     - Add and commit any changes to the code, if applicable
+     - Log in your Heroku account from GitPod, enter: "heroku login -i"
+     - Once authenticated, enter: "heroku git:remote -a {app_name}", where app name is the name given on Heroku to the app just created.
+     - Add and commit any changes to the code, if applicable.
      - Push both to GitHub and Heroku:
-       - git push origin main
-       - git push heroku main
+       - "git push origin main"
+       - "git push heroku main"
   
   
   - Go back to the App page on Heroku, press "More" on the top right corner to monitor the deployment logs
 
-  - Once the deployment is finished, you should be able to see the site clicking on 'Open app' on the top right corner
+  - Once the deployment is finished, you should be able to see the site clicking on 'Open app' on the top right corner of the page.
