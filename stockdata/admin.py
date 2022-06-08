@@ -1,6 +1,10 @@
+"""
+Django admin interface set up
+"""
+
 from django.contrib import admin
-from .models import Comment, StockInfo
 from django_summernote.admin import SummernoteModelAdmin
+from .models import Comment, StockInfo
 
 
 @admin.register(StockInfo)

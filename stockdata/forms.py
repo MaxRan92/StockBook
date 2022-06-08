@@ -1,5 +1,8 @@
-from .models import Comment
+"""
+Django forms
+"""
 from django import forms
+from .models import Comment
 
 
 class CommentForm(forms.ModelForm):
@@ -8,6 +11,9 @@ class CommentForm(forms.ModelForm):
     insert a sentiment
     '''
     class Meta:
+        """
+        Link for to model, set fields and labels
+        """
         model = Comment
         fields = ('body', 'sentiment')
         labels = {
@@ -21,6 +27,9 @@ class EditForm(forms.ModelForm):
     and change sentiment
     '''
     class Meta:
+        """
+        Link for to model, set fields and labels
+        """
         model = Comment
         fields = ('body', 'sentiment')
         labels = {

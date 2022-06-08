@@ -1,5 +1,10 @@
-from . import views
+"""
+Set path from html to views
+"""
+
 from django.urls import path
+from . import views
+
 
 urlpatterns = [
     path('', views.StockList.as_view(), name='home'),

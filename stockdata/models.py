@@ -1,3 +1,6 @@
+"""
+Django models
+"""
 from django.db import models
 from django.contrib.auth.models import User
 from cloudinary.models import CloudinaryField
@@ -32,6 +35,9 @@ class StockInfo(models.Model):
     status = models.IntegerField(choices=STATUS, default=0)
 
     class Meta:
+        """
+        Set ordering
+        """
         ordering = ["-created_on"]
 
     def __str__(self):
@@ -58,6 +64,9 @@ class Comment(models.Model):
         max_length=9, choices=SENTIMENT_CHOICES, default="HOLD")
 
     class Meta:
+        """
+        Set ordering
+        """
         ordering = ["created_on"]
 
     def __str__(self):
