@@ -172,6 +172,14 @@ These pages are used for user authentication and they all return messages when a
 ![Sign In](docs/images/sign-in-view.png)
 
 
+## API and data provider used
+
+* ### Market Prices - Polygon
+To retrieve live market data, I have made a subscription to the <a href="https://polygon.io"><strong>Polygon</strong></a>. With the package provided, Stockbook is able to get Last Trades Prices with a delay of 15 mins, along with its timestamps.  
+
+* ### Stock Fundamentals - YFinance Library
+To get all the fundamental data of the stock (Multiples, Financials, etc.), i used the <a href="https://pypi.org/project/yfinance/"><strong>yfinance</strong></a> library that replicates the data of Yahoo Finance, made by Ran Aroussi. It is free to use and quite complete, although missing live market data.
+
 
 ## Future Features:
 
