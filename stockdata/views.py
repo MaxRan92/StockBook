@@ -1,3 +1,7 @@
+'''
+Importing libraries
+'''
+
 from datetime import datetime, timedelta
 import math
 import json
@@ -20,10 +24,11 @@ from .models import StockInfo, Comment
 from .forms import CommentForm, EditForm
 
 
-MILLNAMES = ['', ' k', ' M', ' Bn', ' Tn']
-
-
 class StockList(generic.ListView):
+    '''
+    Retrieve stockinfo data and paginate
+    by 8 in index.html
+    '''
     model = StockInfo
     queryset = StockInfo.objects.filter(status=1).order_by("-created_on")
     template_name = 'index.html'
@@ -31,23 +36,59 @@ class StockList(generic.ListView):
 
 
 class AboutTemplateView(TemplateView):
+    '''
+    For the about page url
+    '''
     template_name = 'about.html'
 
 
 class Page403(TemplateView):
+    '''
+    For the 403 page url
+    '''
     template_name = '403.html'
 
 
 class Page404(TemplateView):
+    '''
+    For the 404 page url
+    '''
     template_name = '404.html'
 
 
 class Page500(TemplateView):
+    '''
+    For the 500 page url
+    '''
     template_name = '500.html'
 
 
 class StockDetail(View):
+    '''
+    Class used to calculate and render all the
+    informations needed for the stock_detail page.
+    The class includes the following functions:
+    1) get: calls functions to retrieve and calculate data and
+        renders the information in the page
+    2) sentiment_analysis: retrieves the number bulls, bear and holds,
+        calculates the bull/bear ratio
+    3) get_polygon_last_trade: calls the Polygon API request for last trade
+        data, makes calculations and data formatting
+    4) get_yfinance_figures: call the Yfinance library to retrieve
+        stock informations, makes calculations and data formatting
 
+    5) get_chart_data: calls Polygon API proper function to retrieve daily
+        YTD aggs, to be used in the YTD chart.
+    6) get_last_trade_data: Polygon API call for last_trade_data
+    7) get_daily_aggs: Polygon API call for daily aggs
+    8) get_stock_info: Yfinance library data call
+    9) yfinance_data_handler: function to handle errors in yfinance gracefully
+    10)millify: to format big numbers into readable ones, adding Tn, Bn, M, k.
+    11) percentify: to convert floaters to percent number with 2 decimals
+    12) post: to post a comment and refresh data in stock_detail page
+    '''
+
+    # Variables declaration
     comment_edited = comment_deleted = comment_edited_var = \
         comment_deleted_var = False
     api_error = yfinance_error = False
@@ -65,11 +106,17 @@ class StockDetail(View):
     profit_margin = debt_to_equity = ""
 
     def get(self, request, slug):
+        '''
+        Calls functions to retrieve and calculate data and
+        renders the information in the page
+        '''
+        # Retrieves database data and comments for the selected stock
         queryset = StockInfo.objects.filter(status=1)
         stockinfo = get_object_or_404(queryset, slug=slug)
         comments = stockinfo.comments.filter(
             approved=True).order_by('-created_on')
 
+        # Calls sentiment, Polygon and Yfinance functions
         self.sentiment_analysis(stockinfo)
         self.get_polygon_last_trade(stockinfo.ticker)
         self.get_yfinance_figures(stockinfo.ticker)
@@ -95,8 +142,7 @@ class StockDetail(View):
         else:
             self.comment_deleted_var = False
 
-        self.set_error_variables()
-
+        # Render all the variables in HTML
         return render(
             request,
             "stock_detail.html",
@@ -162,7 +208,6 @@ class StockDetail(View):
         self.get_last_trade_data(ticker)
         # If trade data from Polygon API is received, return last
         # trade price, datetime and daily perf
-        # Otherwise set them to None
         if not self.api_error:
             self.last_trade_price = self.last_trade_data.price
             self.last_trade_timestamp = \
@@ -191,7 +236,8 @@ class StockDetail(View):
             # if aggregates data from Polygon API is received, return last
             # close and calculate performance, otherwise return API error
             last_close = self.aggs[0].close
-            self.daily_perf = Percent(self.last_trade_price / last_close - 1)
+            self.daily_perf = self.percentify(
+                self.last_trade_price / last_close - 1)
 
     def get_yfinance_figures(self, ticker):
         '''
@@ -199,8 +245,8 @@ class StockDetail(View):
         and populates a list of variables used for Overview,
         Financials and Fundamental data
         '''
-        # Get stock info from YFinance
 
+        # Get stock info from YFinance
         self.get_stock_info(ticker)
 
         if not self.yfinance_error:
@@ -215,7 +261,7 @@ class StockDetail(View):
             # Market Cap
             self.market_cap = self.yfinance_data_handler("price", "marketCap")
             try:
-                self.market_cap_formatted = millify(self.market_cap)
+                self.market_cap_formatted = self.millify(self.market_cap)
             except (ValueError, TypeError):
                 self.market_cap_formatted = "-"
             # High-Low 52 Weeks
@@ -227,7 +273,7 @@ class StockDetail(View):
             self.avg_vol = self.yfinance_data_handler(
                 "summaryDetail", "averageVolume")
             try:
-                self.avg_vol = '{:,}'.format(self.avg_vol)
+                self.avg_vol = f'{self.avg_vol:,}'
             except (ValueError, TypeError):
                 pass
 
@@ -236,14 +282,14 @@ class StockDetail(View):
             self.revenue = self.yfinance_data_handler(
                 "financialData", "totalRevenue")
             try:
-                self.revenue = millify(self.revenue)
+                self.revenue = self.millify(self.revenue)
             except (ValueError, TypeError):
                 pass
             # Income
             self.income = self.yfinance_data_handler(
                 "defaultKeyStatistics", "netIncomeToCommon")
             try:
-                self.income = millify(self.income)
+                self.income = self.millify(self.income)
             except (ValueError, TypeError):
                 pass
             # Dividend Yield and Dividend Rate
@@ -260,14 +306,14 @@ class StockDetail(View):
             except (ValueError, TypeError):
                 pass
             try:
-                self.dividend_yield = Percent(self.dividend_yield)
+                self.dividend_yield = self.percentify(self.dividend_yield)
             except (ValueError, TypeError):
                 pass
             # Payout Ratio
             self.payout_ratio = self.yfinance_data_handler(
                 "summaryDetail", "payoutRatio")
             try:
-                self.payout_ratio = Percent(self.payout_ratio)
+                self.payout_ratio = self.percentify(self.payout_ratio)
             except (ValueError, TypeError):
                 pass
 
@@ -296,22 +342,13 @@ class StockDetail(View):
                 "defaultKeyStatistics", "profitMargins")
             if isinstance(self.profit_margin, float) or \
                     isinstance(self.profit_margin, int):
-                self.profit_margin = Percent(self.profit_margin)
+                self.profit_margin = self.percentify(self.profit_margin)
             # Debt to Equity
             self.debt_to_equity = self.yfinance_data_handler(
                 "financialData", "debtToEquity")
             if isinstance(self.debt_to_equity, float) or \
                     isinstance(self.debt_to_equity, int):
                 self.debt_to_equity = round(self.debt_to_equity/100, 2)
-
-    def yfinance_data_handler(self, key1, key2):
-        '''
-        To override yfinance objects so UX handles error condition gracefully
-        '''
-        try:
-            return self.stock_data[key1][key2]
-        except (KeyError, TypeError):
-            return "-"
 
     def get_chart_data(self, ticker, interval, start_date, end_date):
         '''
@@ -343,7 +380,7 @@ class StockDetail(View):
         '''
         Function that connects with Polygon API to retrieve
         last trade data.
-        If error occurs, returns none variable.
+        If error occurs, sets api_error to true.
         '''
         try:
             client = RESTClient(API_KEY)
@@ -357,7 +394,7 @@ class StockDetail(View):
         '''
         Function that connects with Polygon API to retrieve
         data aggregates from start_date to end_date.
-        If error occurs, returns none variable.
+        If error occurs, sets api_error to true.
         '''
         try:
             client = RESTClient(API_KEY)
@@ -368,37 +405,43 @@ class StockDetail(View):
             self.api_error = True
 
     def get_stock_info(self, ticker):
+        '''
+        to retrieve stock info data from Yfinance library
+        in the form of a dictionary
+        If dictionary is empty, sets yfinance_error to true.
+        '''
         self.stock_data = yf.Ticker(ticker).stats()
 
         if len(self.stock_data) == 0:
             self.yfinance_error = True
 
-    def set_error_variables(self):
-        # if there is a Polygon API error, set trade data and perf
-        # to None
-        if self.api_error:
-            self.last_trade_price = None
-            self.last_trade_datetime = None
-            self.daily_perf = None
+    def yfinance_data_handler(self, key1, key2):
+        '''
+        To override yfinance objects so UX handles error condition gracefully
+        '''
+        try:
+            return self.stock_data[key1][key2]
+        except (KeyError, TypeError):
+            return "-"
 
-        # if there is a yfinance error, set all the related
-        # variables to None
-        if self.yfinance_error:
-            self.price_earnings = None
-            self.price_to_fcf = None
-            self.profit_margin = None
-            self.debt_to_equity = None
-            self.sector = None
-            self.market_cap_formatted = None
-            self.high_52w = None
-            self.low_52w = None
-            self.avg_vol = None
-            self.revenue = None
-            self.income = None
-            self.dividend_rate = None
-            self.dividend_yield = None
-            self.payout_ratio = None
-            self.currency = None
+    def millify(self, n):
+        '''
+        adapted version of code form Janus on StackOverflow
+        https://stackoverflow.com/questions/3154460/python-human-readable-large-numbers
+
+        '''
+        millnames = ['', ' k', ' M', ' Bn', ' Tn']
+        n = float(n)
+        millidx = max(0, min(len(millnames)-1,
+                             int(math.floor(0 if n == 0 else
+                                            math.log10(abs(n))/3))))
+        return '{:.2f}{}'.format(n / 10**(3 * millidx), millnames[millidx])
+
+    def percentify(self, float_num):
+        '''
+        To format numbers to percent with 2
+        '''
+        return '{:.2%}'.format(float_num)
 
     def post(self, request, slug):
         """
@@ -421,9 +464,9 @@ class StockDetail(View):
         else:
             comment_form = CommentForm()
 
+        # Set api and yfinance error to False and re-run data request
         self.api_error = False
         self.yfinance_error = False
-
         self.sentiment_analysis(stockinfo)
         self.get_polygon_last_trade(stockinfo.ticker)
         self.get_yfinance_figures(stockinfo.ticker)
@@ -437,8 +480,7 @@ class StockDetail(View):
         else:
             self.context = None
 
-        self.set_error_variables()
-
+        # render updated data
         return render(
             request,
             "stock_detail.html",
@@ -500,9 +542,7 @@ class CommentEdit(UpdateView):
     If user is logged in:
     Direct user to update_comment.html template,
     displaying ReviewForm for that specific review.
-    Post edited info back to the DB
-    return user to post.
-    display success message.
+    Post edited info back to the DB and return user to post.
     """
     model = Comment
     form_class = EditForm
@@ -521,19 +561,3 @@ class CommentEdit(UpdateView):
         """
         StockDetail.comment_edited = True
         return reverse("stock_detail", kwargs={"slug": self.object.stock.slug})
-
-
-class Percent(float):
-    def __str__(self):
-        return '{:.2%}'.format(self)
-
-
-# adapted version of code form Janus on StackOverflow
-# https://stackoverflow.com/questions/3154460/python-human-readable-large-numbers
-def millify(n):
-    n = float(n)
-    millidx = max(0, min(len(MILLNAMES)-1,
-                         int(math.floor(0 if n == 0 else
-                             math.log10(abs(n))/3))))
-
-    return '{:.2f}{}'.format(n / 10**(3 * millidx), MILLNAMES[millidx])

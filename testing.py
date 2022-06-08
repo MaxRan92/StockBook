@@ -21,16 +21,23 @@ def get_historical_prices():
     date = trades[0].timestamp
     date = datetime.fromtimestamp(date // 1000)
 
-    for x in range (0, len(trades)):
-        # pdb.set_trace()
-        date_unix_msec = trades[x].timestamp
-        date_converted = datetime.fromtimestamp(date_unix_msec // 1000).date()
-        trades[x].timestamp = str(date_converted)
+    for x in enumerate(trades):
+        print(x[1].timestamp)
 
-    df = pd.DataFrame(trades)
-    df = df.to_json()
-    # list = df['timestamp'].tolist()
-    print(df)
+
+    # for x in range (0, len(trades)):
+    #     # pdb.set_trace()
+    #     date_unix_msec = trades[x].timestamp
+    #     date_converted = datetime.fromtimestamp(date_unix_msec // 1000).date()
+    #     trades[x].timestamp = str(date_converted)
+
+    # df = pd.DataFrame(trades)
+    # df = df.to_json()
+    # # list = df['timestamp'].tolist()
+    # print(df)
+
+
+get_historical_prices()
 
 
 def get_stock_info(ticker):
@@ -38,7 +45,7 @@ def get_stock_info(ticker):
     print(stock_data["financialData"]["freeCashflow"])
 
 
-get_stock_info("BA")
+
 
 def yfinance_error_handler(ticker): 
     stock_data = yf.Ticker(ticker).stats()
