@@ -22,5 +22,3 @@ urlpatterns = [
     path('', include('stockdata.urls'), name='stockdata_urls'),
     path('accounts/', include('allauth.urls')),
 ]
-
-

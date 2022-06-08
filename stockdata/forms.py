@@ -3,6 +3,10 @@ from django import forms
 
 
 class CommentForm(forms.ModelForm):
+    '''
+    Form to add a comment and
+    insert a sentiment
+    '''
     class Meta:
         model = Comment
         fields = ('body', 'sentiment')
@@ -10,7 +14,12 @@ class CommentForm(forms.ModelForm):
             "body": "Share your idea on this ticker",
         }
 
+
 class EditForm(forms.ModelForm):
+    '''
+    Form to edit the body of a comment
+    and change sentiment
+    '''
     class Meta:
         model = Comment
         fields = ('body', 'sentiment')
