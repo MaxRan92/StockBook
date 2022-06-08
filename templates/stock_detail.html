@@ -10,34 +10,37 @@
             <div class="col-md-12 detail-image-container">
                 <!-- The featured image URL goes in the src attribute -->
                 {% if "placeholder" in stockinfo.featured_image.url %}
-                <img src="https://res.cloudinary.com/dt5umjifx/image/upload/v1654632762/static/images/logo.cf317108eabe.png" width="100%">
+                <img src="https://res.cloudinary.com/dt5umjifx/image/upload/v1654632762/static/images/logo.cf317108eabe.png"
+                    alt="default StockBook logo" aria-label="default StockBook logo">
                 {% else %}
-                <img src=" {{ stockinfo.logo_image.url }}" width="100%">
+                <img src=" {{ stockinfo.logo_image.url }}" alt="Specific Company Logo"
+                    aria-label="Specific Company Logo">
                 {% endif %}
             </div>
         </div>
         <div class="row">
             <div class="card-container col-md-4 mt-3">
                 <div class="element-card">
-                    <!-- asset title goes in these h1 tags -->
+                    <!-- asset title goes in these h1 tags, followed by Price data, currency and last update -->
                     <h1 class="fw-bold">{{ stockinfo.title }} ({{ stockinfo.ticker }})</h1>
                     {% if not api_error %}
-                        {% if daily_perf > 0 %}
-                        <h3 class="fw-bold">Last Price: <span class="text-success">{{ last_trade_price }} {{ currency }}
-                                ({{ daily_perf }})</span></h3>
-                        {% elif daily_perf == 0 %}
-                        <h3 class="fw-bold">Last Price: <span>{{ last_trade_price }} {{ currency }}
-                                ({{ daily_perf }})</span></h3>
-                        {% else %}
-                        <h3 class="fw-bold">Last Price: <span class="text-danger">{{ last_trade_price }} {{ currency }}
-                                ({{ daily_perf }})</span></h3>
-                        {% endif %}
-                        <p>Currency: {{ currency}}<br>Updated: <span>{{ last_trade_datetime }}</span></p>
+                    {% if daily_perf > 0 %}
+                    <h3 class="fw-bold">Last Price: <span class="text-success">{{ last_trade_price }} {{ currency }}
+                            ({{ daily_perf }})</span></h3>
+                    {% elif daily_perf == 0 %}
+                    <h3 class="fw-bold">Last Price: <span>{{ last_trade_price }} {{ currency }}
+                            ({{ daily_perf }})</span></h3>
                     {% else %}
-                            <p>Unable to get prices due to system maintenance</p>
+                    <h3 class="fw-bold">Last Price: <span class="text-danger">{{ last_trade_price }} {{ currency }}
+                            ({{ daily_perf }})</span></h3>
+                    {% endif %}
+                    <p>Currency: {{ currency}}<br>Updated: <span>{{ last_trade_datetime }}</span></p>
+                    {% else %}
+                    <p>Unable to get prices due to system maintenance</p>
                     {% endif %}
                 </div>
             </div>
+            <!-- Company Description -->
             <div class="card-container col-md-8 mt-3">
                 <div class="element-card description">
                     <h3>Company Description</h3>
@@ -48,6 +51,7 @@
     </div>
 </div>
 
+<!-- Chart -->
 {% if not api_error %}
 <div class="chart-area">
     <div class="container">
@@ -101,6 +105,7 @@
 </div>
 {% endif %}
 
+<!-- Overview, Fundamental, Multiples and Sentiment Data -->
 {% if not yfinance_error %}
 <div class="analysis-area">
     <div class="container">
@@ -182,7 +187,7 @@
                     <h3>Sentiment</h3>
                     <table class="table">
                         <tr class="text-success">
-                            <th><i class="fas fa-arrow-up"></i> Bulls</i></th>
+                            <th><i class="fas fa-arrow-up"></i> Bulls</th>
                             <td>{{ bulls_num }}</td>
 
                         </tr>
@@ -206,6 +211,7 @@
 </div>
 {% endif %}
 
+<!-- Comments Area -->
 <div class="comments-area">
     <div class="container">
         <div class="row">
@@ -269,6 +275,7 @@
             </div>
             <div class="card-container col-lg-4 mb-4 mt-3 ">
                 {% if user.is_authenticated %}
+                <!-- Message if comment is posted, edited or deleted -->
                 <div class="element-card" id="post-comment-card">
                     {% if commented %}
                     <div class="alert alert-success" role="alert">
@@ -283,6 +290,7 @@
                         Your comment has been successfully deleted
                     </div>
                     {% endif %}
+                    <!-- Comment form -->
                     <h3>Leave a comment:</h3>
                     <p>Posting as: {{ user.username }}</p>
                     <form method="post">
@@ -290,8 +298,6 @@
                         {% csrf_token %}
                         <button type="submit" class="btn btn-lg btn-post-comment fw-bold">Submit</button>
                     </form>
-
-
                 </div>
                 {% endif %}
             </div>

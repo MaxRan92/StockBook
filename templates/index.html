@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="row">
 
-        <!-- Blog Entries Column -->
+        <!-- Stock Entries Cards -->
         <div class="col-12 mt-3 left">
             <div class="row">
                 {% for stockinfo in stockinfo_list %}
@@ -17,9 +17,11 @@
                                 <div class="image-container">
                                     {% if "placeholder" in stockinfo.logo_image.url %}
                                     <img class="card-img-top"
-                                        src="https://res.cloudinary.com/dt5umjifx/image/upload/v1654632762/static/images/logo.cf317108eabe.png" alt="default StockBook logo" aria-label="default StockBook logo">
+                                        src="https://res.cloudinary.com/dt5umjifx/image/upload/v1654632762/static/images/logo.cf317108eabe.png"
+                                        alt="default StockBook logo" aria-label="default StockBook logo">
                                     {% else %}
-                                    <img class="card-img-top" src=" {{ stockinfo.logo_image.url }}" alt="Specific Company Logo">
+                                    <img class="card-img-top" src=" {{ stockinfo.logo_image.url }}"
+                                        alt="Specific Company Logo" aria-label="Specific Company Logo">
                                     {% endif %}
                                 </div>
                                 <div class="stock-name-container">
