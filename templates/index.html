@@ -4,6 +4,34 @@
 
 
 <div class="container-fluid">
+
+    <div class="container">
+        <div class="row">
+            <div class="card-container">
+                <div class="element-card">
+                    <div class="row">
+                        <div class="col-md-6 fs-5 m-auto">
+                            <p class="text-left fw-bold">
+                                {% if user.is_authenticated %}
+                                Hello, {{ user.username }}!
+                                {% endif %}
+                                <br>Welcome to StockBook, the
+                                ultimate
+                                community for investors and traders!</p>
+                            <p>Please select a company from the list below and dive into its detailed financial
+                                insights!
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <img src="https://res.cloudinary.com/dt5umjifx/image/upload/v1654612753/static/images/bull-vs-bear.49cb4b16597f.jpg"
+                                alt="bull-vs-bear image" aria-label="bull-vs-bear image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
 
         <!-- Stock Entries Cards -->
