@@ -360,18 +360,18 @@ class StockDetail(View):
         self.get_daily_aggs(ticker, interval, start_date, end_date)
         trades = self.aggs
 
-        for x in enumerate(trades):
-            date_unix_msec = x[1].timestamp
+        for single_agg in enumerate(trades):
+            date_unix_msec = single_agg[1].timestamp
             date_converted = datetime.fromtimestamp(
                 date_unix_msec // 1000).date()
-            x[1].timestamp = str(date_converted)
+            single_agg[1].timestamp = str(date_converted)
 
-        df = pd.DataFrame(trades)
-        dates = df["timestamp"].tolist()
+        trades_dataframe = pd.DataFrame(trades)
+        dates = trades_dataframe["timestamp"].tolist()
         self.last_trade_datetime_converted = str(
             self.last_trade_datetime.date())
         dates.append(self.last_trade_datetime_converted)
-        prices = df["close"].tolist()
+        prices = trades_dataframe["close"].tolist()
         prices.append(self.last_trade_price)
         self.context = {"dates": mark_safe(json.dumps(
             dates)), "prices": mark_safe(json.dumps(prices))}
@@ -424,24 +424,25 @@ class StockDetail(View):
         except (KeyError, TypeError):
             return "-"
 
-    def millify(self, n):
+    def millify(self, big_number):
         '''
         adapted version of code form Janus on StackOverflow
         https://stackoverflow.com/questions/3154460/python-human-readable-large-numbers
 
         '''
         millnames = ['', ' k', ' M', ' Bn', ' Tn']
-        n = float(n)
+        big_number = float(big_number)
         millidx = max(0, min(len(millnames)-1,
-                             int(math.floor(0 if n == 0 else
-                                            math.log10(abs(n))/3))))
-        return '{:.2f}{}'.format(n / 10**(3 * millidx), millnames[millidx])
+                             int(math.floor(0 if big_number == 0 else
+                                            math.log10(abs(big_number))/3))))
+        return f'{(big_number / 10**(3 * millidx)):.2f}{millnames[millidx]}'
+
 
     def percentify(self, float_num):
         '''
         To format numbers to percent with 2
         '''
-        return '{:.2%}'.format(float_num)
+        return f'{float_num:.2%}'
 
     def post(self, request, slug):
         """

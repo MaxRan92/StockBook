@@ -22,6 +22,7 @@ def get_historical_prices():
     date = datetime.fromtimestamp(date // 1000)
 
     for x in enumerate(trades):
+        
         print(x[1].timestamp)
 
 
