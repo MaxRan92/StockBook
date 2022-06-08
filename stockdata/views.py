@@ -1,24 +1,23 @@
+from datetime import datetime, timedelta
 import math
 import json
-import pandas as pd
-import yfinance as yf
-import pandas_market_calendars as mcal
-from stockbook.settings import POLYGON_API_KEY as API_KEY
-from datetime import datetime, timedelta
 from django.shortcuts import render, get_object_or_404
 from django.views import generic, View
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-from django.contrib import messages
 from django.views.generic import DeleteView, UpdateView
 from django.views.generic.base import TemplateView
 from django.utils.decorators import method_decorator
 from django.utils.safestring import mark_safe
 from django.contrib.auth.decorators import login_required
-from .models import StockInfo, Comment
-from .forms import CommentForm, EditForm
 from polygon import RESTClient, exceptions
 from requests.exceptions import Timeout, TooManyRedirects, RequestException, HTTPError  # noqa
+import pandas as pd
+import yfinance as yf
+import pandas_market_calendars as mcal
+from stockbook.settings import POLYGON_API_KEY as API_KEY
+from .models import StockInfo, Comment
+from .forms import CommentForm, EditForm
 
 
 MILLNAMES = ['', ' k', ' M', ' Bn', ' Tn']
@@ -49,17 +48,27 @@ class Page500(TemplateView):
 
 class StockDetail(View):
 
-    comment_edited = False
-    comment_deleted = False
+    comment_edited = comment_deleted = comment_edited_var = \
+        comment_deleted_var = False
+    api_error = yfinance_error = False
+    context = {}
+    bulls_num = bears_num = hold_num = bulls_bears_ratio = ""
+    last_trade_price = daily_perf = last_trade_data = aggs = \
+        stock_data = ""
+    last_trade_timestamp = last_trade_datetime = \
+        last_trade_datetime_converted = ""
+    previous_day = ""
+    currency = sector = market_cap = market_cap_formatted = ""
+    high_52w = low_52w = avg_vol = ""
+    revenue = income = dividend_rate = dividend_yield = ""
+    payout_ratio = price_earnings = price_to_fcf = ""
+    profit_margin = debt_to_equity = ""
 
     def get(self, request, slug):
         queryset = StockInfo.objects.filter(status=1)
         stockinfo = get_object_or_404(queryset, slug=slug)
         comments = stockinfo.comments.filter(
             approved=True).order_by('-created_on')
-
-        self.api_error = False
-        self.yfinance_error = False
 
         self.sentiment_analysis(stockinfo)
         self.get_polygon_last_trade(stockinfo.ticker)
@@ -73,9 +82,6 @@ class StockDetail(View):
                                 "2021-12-31", self.previous_day)
         else:
             self.context = None
-
-        self.comment_edited_var = False
-        self.comment_deleted_var = False
 
         if self.comment_edited:
             self.comment_edited_var = True
@@ -147,7 +153,7 @@ class StockDetail(View):
 
     def get_polygon_last_trade(self, ticker):
         '''
-        Function that takes ticker, retrieves stock trade data from 
+        Function that takes ticker, retrieves stock trade data from
         polygon API, in order to get the last trade price, the linked
         timestamp and the daily performance relative to previous close
         '''
@@ -182,14 +188,14 @@ class StockDetail(View):
             self.previous_day = self.previous_day.strftime("%Y-%m-%d")
             self.get_daily_aggs(
                 ticker, "day", self.previous_day, self.previous_day)
-            # if aggregates data from Polygon API is received, return last 
+            # if aggregates data from Polygon API is received, return last
             # close and calculate performance, otherwise return API error
             last_close = self.aggs[0].close
             self.daily_perf = Percent(self.last_trade_price / last_close - 1)
 
     def get_yfinance_figures(self, ticker):
         '''
-        Function that takes ticker, retrieves stock data from yfinance library, 
+        Function that takes ticker, retrieves stock data from yfinance library,
         and populates a list of variables used for Overview,
         Financials and Fundamental data
         '''
@@ -269,16 +275,16 @@ class StockDetail(View):
             # Price/Earnings
             self.price_earnings = self.yfinance_data_handler(
                 "summaryDetail", "trailingPE")
-            if type(self.price_earnings) == float or \
-                    type(self.price_earnings) == int:
+            if isinstance(self.price_earnings, float) or \
+                    isinstance(self.price_earnings, int):
                 self.price_earnings = round(self.price_earnings, 2)
             # Price/FCF
             free_cash_flow = self.yfinance_data_handler(
                 "financialData", "freeCashflow")
-            if (type(free_cash_flow) == int or type(free_cash_flow) == float) \
-                    and free_cash_flow > 0:
-                if type(self.market_cap) == int or \
-                        type(self.market_cap) == float:
+            if (isinstance(free_cash_flow, int) or
+                    isinstance(free_cash_flow, float)) and free_cash_flow > 0:
+                if isinstance(self.market_cap, int) or \
+                        isinstance(self.market_cap, float):
                     self.price_to_fcf = round(
                         self.market_cap / free_cash_flow, 2)
                 else:
@@ -288,14 +294,14 @@ class StockDetail(View):
             # Profit Margin
             self.profit_margin = self.yfinance_data_handler(
                 "defaultKeyStatistics", "profitMargins")
-            if type(self.profit_margin) == float or \
-                    type(self.profit_margin) == int:
+            if isinstance(self.profit_margin, float) or \
+                    isinstance(self.profit_margin, int):
                 self.profit_margin = Percent(self.profit_margin)
             # Debt to Equity
             self.debt_to_equity = self.yfinance_data_handler(
                 "financialData", "debtToEquity")
-            if type(self.debt_to_equity) == float or \
-                    type(self.debt_to_equity) == int:
+            if isinstance(self.debt_to_equity, float) or \
+                    isinstance(self.debt_to_equity, int):
                 self.debt_to_equity = round(self.debt_to_equity/100, 2)
 
     def yfinance_data_handler(self, key1, key2):
@@ -310,7 +316,7 @@ class StockDetail(View):
     def get_chart_data(self, ticker, interval, start_date, end_date):
         '''
         Function that get ticker, data interval, start date and end date,
-        retrieves stock data from Polygon API, creates a list of 
+        retrieves stock data from Polygon API, creates a list of
         timestamps and prices, and converts the list to JSON array in order
         to be rendered in the chart.js
         '''
@@ -394,7 +400,7 @@ class StockDetail(View):
             self.payout_ratio = None
             self.currency = None
 
-    def post(self, request, slug, *args, **kwargs):
+    def post(self, request, slug):
         """
         Post method to post the comment.
         """
@@ -522,7 +528,7 @@ class Percent(float):
         return '{:.2%}'.format(self)
 
 
-# adapted version of code form Janus on StackOverflow 
+# adapted version of code form Janus on StackOverflow
 # https://stackoverflow.com/questions/3154460/python-human-readable-large-numbers
 def millify(n):
     n = float(n)
