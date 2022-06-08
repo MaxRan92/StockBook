@@ -175,10 +175,45 @@ These pages are used for user authentication and they all return messages when a
 ## API and data provider used
 
 * ### Market Prices - Polygon
-To retrieve live market data, I have made a subscription to the <a href="https://polygon.io"><strong>Polygon</strong></a>. With the package provided, Stockbook is able to get Last Trades Prices with a delay of 15 mins, along with its timestamps.  
+To retrieve live market data, I have made a subscription to the <a href="https://polygon.io"><strong>Polygon</strong></a>. With the package provided, Stockbook is able to get Last Trades Prices with a delay of 15 mins, along with their trade timestamps.  
 
 * ### Stock Fundamentals - YFinance Library
-To get all the fundamental data of the stock (Multiples, Financials, etc.), i used the <a href="https://pypi.org/project/yfinance/"><strong>yfinance</strong></a> library that replicates the data of Yahoo Finance, made by Ran Aroussi. It is free to use and quite complete, although missing live market data.
+To get all the fundamental data of the stock (Multiples, Financials, etc.), I used the <a href="https://pypi.org/project/yfinance/"><strong>yfinance</strong></a> library that replicates the data of Yahoo Finance, made by Ran Aroussi. It is free to use and quite complete, although missing live market data.
+
+
+
+## Testing
+
+### Lighthouse Audit 
+All the pages receive scores higher than 90 in SEO, Accessibility and Best Practices.
+Performance sometimes has a score around 80 because some pictures are in high resolution. API calls may add some time to the page loading. Given this, the performance of the site looks still solid.
+
+### Validator Testing 
+* ### W3C CSS Validation 
+CSS code passed through the CSS validator with no errors.
+![CSS Validator](docs/images/jigsaw-validator.png)
+
+* ### HTML Validator 
+All HTML pages' code passed through HTML Validator with no errors.
+![HTML Validator](docs/images/html-validator.png)
+
+* ### PEP8 Validator
+All python files passed through PEP8 with no errors. 
+![PEP8 Validator](docs/images/python-validator.png)
+
+* ### Cross Browser and Device Testing
+    - The site has been tested on multiple devices sceen sizes with the proper Chrome emulator. All the elements of the pages are rendered properly and are full responsive.
+    - Moreover, the website has been tested on Safari, Chrome and Firefox.
+
+    The Bootstrap5 Grid System has been largely used in the HTML code, greatly facilitating the development of responsive pages.
+
+
+#### Navigation
+
+
+TESTING TO BE INSERTED HERE
+
+
 
 
 ## Future Features:
