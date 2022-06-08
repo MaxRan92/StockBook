@@ -80,3 +80,54 @@ The issue has now been addressed (accidentally populated additional index field 
    The colour palette is not aggressive on the look of the web pages, to allow users to focus on data and information details. Moreover, vivaciousness is added by the numerous company logos and by the two main images, hence the final result is not dull.
 
 ![colour-palette](docs/images/colour-palette.png)
+
+
+* ### Icons
+
+    The Icons used are created with the help of the following sites:
+    - [fontawesome](https://fontawesome.com/start)
+    - [favicon](https://www.favicon.io/) 
+
+
+## Data Models
+
+
+* ### StockInfo
+This data model is used to store all the relevant information about a listed stock:
+
+| Field       | Data Type         | Purpose                          | Form Validation                  |
+|-------------|-------------------|----------------------------------|----------------------------------|
+| pk          | unique Identifier |                                  |                                  |
+| title       | CharField         | Company Name                     | required, max length 200, unique |
+| ticker      | CharField         | Official ticker of the company   | required, max lenght 6, unique   |
+| slug        | SlugField         | Urls                             | required, unique                 |
+| author      | ForeignKey        | Stores the author of the update  | required                         |
+| updated_on  | DateTimeField     | Timestamp of the update          | automatic                        |
+| description | TextField         | Business Description             | required                         |
+| logo_image  | CloudinaryField   | To store company logo            | not required                     |
+| excerpt     | TextField         | Business summary                 | not required                     |
+| created_on  | DateTimeField     | Timestamp of the creation        | automatic                        |
+| status      | IntegerField      | Draft vs Published               | required, default is Draft       |
+
+
+* ### Comment
+This data model is used to store the comments of the users along with their sentiment:
+
+| Field       | Data Type         | Purpose                          | Form Validation                  |
+|-------------|-------------------|----------------------------------|----------------------------------|
+| pk          | unique Identifier |                                  |                                  |
+| stock       | ForeignKey        | One to many relation w/StockInfo | required but automatic           |
+| name        | CharField         | To be shown below comment        | required but automatic           |
+| email       | EmailField        | To be stored in database         | required but automatic           |
+| body        | TextField         | To be shown, it is the comment   | required                         |
+| created_on  | DateTimeField     | To be shown below the comment    | required but automatic           |
+| approved    | BooleanField      | admin approve befor publishing   | required, auto is False (*)      |
+| sentiment   | CharField         | To express the sentiment         | required, default id HOLD        |
+
+(*) Please notice that in the current version and for better interactivity of the users, also not approved comments are shown in the site.
+The original version with comments to be approved to appear may be retrieved from initial commits.
+
+- [x] Create - Every registered and logged in user can post a comment with sentimenti in the page of a specific stock
+- [x] Read - Every user can read the comments of other users
+- [x] Update - Every registered and logged in user can edit a comment posted by himself
+- [x] Delete - Every registered and logged in user can delete a comment posted by himself
