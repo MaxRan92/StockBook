@@ -91,7 +91,6 @@ The issue has now been addressed (accidentally populated additional index field 
 
 ## Data Models
 
-
 * ### StockInfo
 This data model is used to store all the relevant information about a listed stock:
 
@@ -122,7 +121,7 @@ This data model is used to store the comments of the users along with their sent
 | body        | TextField         | To be shown, it is the comment   | required                         |
 | created_on  | DateTimeField     | To be shown below the comment    | required but automatic           |
 | approved    | BooleanField      | admin approve befor publishing   | required, auto is False (*)      |
-| sentiment   | CharField         | To express the sentiment         | required, default id HOLD        |
+| sentiment   | CharField         | To express the sentiment         | required, default is HOLD        |
 
 (*) Please notice that in the current version and for better interactivity of the users, also not approved comments are shown in the site.
 The original version with comments to be approved to appear may be retrieved from initial commits.
@@ -131,3 +130,43 @@ The original version with comments to be approved to appear may be retrieved fro
 - [x] Read - Every user can read the comments of other users
 - [x] Update - Every registered and logged in user can edit a comment posted by himself
 - [x] Delete - Every registered and logged in user can delete a comment posted by himself
+
+
+## Features
+
+* ### Navigation Bar:
+The navigation bar is intuitive: users can always return to the home page, which shows the list of published stocks. Moreover, user can go to the about page to view general information and can login or register if logged out, or log out if logged in.
+
+* ### Home Page - Stock list
+In the homepage the user receives a welcome to the site and can view all the featured stocks, scrolling down or going to next or previous page.
+Each stock is represented by a card showing its logo, name and brief summary. 
+By clicking on a card of a stock, the page links to its Stocks Detail Page.
+
+![Home View](docs/images/home-view.png)
+
+* ### Stock Detail Page
+Here the user can find the following sections:
+
+ - Main Data Section and Company description: name of the stock, ticker, last price and daily performance, currency, last price update and long company description.
+
+![Stock Detail Main Data](docs/images/stock-detail-top-view.png)
+
+ - YTD Price Chart, with the time series of the YTD prices
+ - Fundamental Data, a section hosting useful data grouped in Overview, Financials, Multiples and Sentiment
+
+![Chart and Fundamentals](docs/images/stock-detail-graph-fundamentals-view.png)
+
+ - Comments, in which the user can see all the comments of the stock. 
+ Moreover, if logged in a user can post a comment through the specific form, or edit and delete (own) comments through a button. These active actions of the user are always followed by a confirmation message on the message form.
+
+![Comments](docs/images/stock-detail-comment-view.png)
+
+* ### About Page
+A page in which the user can gather general information about the features of the site.
+
+![About](docs/images/about-view.png)
+
+* ### Register, Log in, Log out pages
+These pages are used for user authentication and they all return messages when actions are completed.
+
+![Sign In](docs/images/sign-in-view.png)
