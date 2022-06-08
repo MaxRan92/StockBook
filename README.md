@@ -211,7 +211,7 @@ All python files passed through PEP8 with no errors.
 #### Navigation
 
 
-TESTING TO BE INSERTED HERE
+Forms, views, urls and api TESTING RESULTS TO BE INSERTED HERE
 
 
 
@@ -230,3 +230,58 @@ A more complex development would be the implementation of a portfolio functional
 * ### News Feed
 Every Stock Detail page could have a news feed with all the relevant news regarding the ticker, provided via API.
 
+
+
+## Deployments 
+
+### Local 
+
+- Step 1: Go the git hub repo: https://github.com/MaxRan92/StockBook
+
+- Step 2: Press the green Gitpod button. 
+
+- Step 3: If needed, Upgrade pip locally with: pip3 install --upgrade pip
+
+- Step 4: Create a new .env file by typing: touch env.py and put the below values into the file.
+  - os.environ["DATABASE_URL"] = "YOUR_VALUE"
+  - os.environ["SECRET_KEY"] = "YOUR_VALUE"
+  - os.environ["CLOUDINARY_URL"] = "YOUR_VALUE" 
+  - Please notice you should also insert a poligon API key: os.environ["POLYGON_API_KEY"] = "--API KEY--". Unfortunately the service is premium and data will not be downloaded without a proper key. In any case, the code should be able to manage the absence of an API key and all the remaining functionalities will remain active.
+
+- Step 5: Install all requirements by typing: pip3 install -r requirements.txt into your terminal. 
+
+- Step 6: Create the superuser so you can have access to the django admin, follow the steps necessary to set up the username, email and password by running the following management command in your terminal: python manage.py createsuperuser
+
+- Step 7: Start your server by running the following management command in your terminal: python3 manage.py runserver
+
+
+### Heroku 
+
+The site was deployed to Heroku. The steps to deploy are as follows: 
+
+  - First, log into Heroku and create a new app.
+  
+  - Click on the 'Resources' tab and search for 'Heroku Postgres' as this is the add-on you will use for the deployed database.
+
+  - Once the app is created, go into the 'Settings' tab. 
+  
+  - From here, go to the 'Config Vars section'. 
+
+  ![Heroku-config-vars](docs/images/heroku-vars.png)
+  
+  - You then enter the keys and (yours) values for CLOUDINARY_URL, DATABASE_URL, SECRET_KEY and POLYGON_API_KEY. 
+  
+  - After finishing you are ready to deploy. There is the proper functionality in the 'deploy' tab which needs to connect GitHub. However, as of the date of this writing, the GitHub connection is not functioning.
+
+  - To solve it, you can deploy via Gitpod terminal. To do so:
+     - To log in to Heroku from GitPod, enter: "heroku login -i"
+     - Once authenticated, enter: "heroku git:remote -a {app_name}", where app name is the name given on Heroku
+     - Add and commit any changes to the code, if applicable
+     - Push both to GitHub and Heroku:
+       - git push origin main
+       - git push heroku main
+  
+  
+  - Go back to the App page on Heroku, press "More" on the top right corner to monitor the deployment logs
+
+  - Once the deployment is finished, you should be able to see the site clicking on 'Open app' on the top right corner
