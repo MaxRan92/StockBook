@@ -30,8 +30,8 @@ The issue has now been addressed (accidentally populated additional index field 
 ## User Experience (UX)
 
 * ### Vision  
-StockBook seeks to condense a company's fundamentals, stock performance and community sentiment in one website. To do so, key performance indicators, live data and time series must be represented accessing certified data providers. The website should be intuitive and the sometimes big amount of data should be displayed in a clear, schematic and understandable way.
-Users should be inspired and encouraged to give recommendations, which will create indicators useful to understand the overall community sentiment.
+    StockBook seeks to condense a company's fundamentals, stock performance and community sentiment in one website. To do so, key performance indicators, live data and time series must be represented accessing certified data providers. The website should be intuitive and the sometimes big amount of data should be displayed in a clear, schematic and understandable way.
+    Users should be inspired and encouraged to give recommendations, which will create indicators useful to understand the overall community sentiment.
 
 * ### Aims
     The primary aim is to provide users with an useful tool to analyse and judge a company valuation in few moments. Moreover users should be not only data receiver, but also recommendation maker. The website provides quantitative data, the community responds with qualitative comments.
@@ -74,3 +74,9 @@ Users should be inspired and encouraged to give recommendations, which will crea
 
 ![Wireframe-home](docs/images/wireframe-home.png)
 ![Wireframe-stockdetail](docs/images/wireframe-stock-detail.png)
+
+* ### Colour palette
+   The palette of colors is as shown below. The primary colours used are light grey, dark grey and yellow. Blue is used for some secondary details (Graph, links). 
+   The colour palette is not aggressive on the look of the web pages, to allow users to focus on data and information details. Moreover, vivaciousness is added by the numerous company logos and by the two main images, hence the final result is not dull.
+
+![colour-palette](docs/images/colour-palette.png)
