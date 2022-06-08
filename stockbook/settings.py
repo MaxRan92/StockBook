@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 POLYGON_API_KEY = os.environ.get('POLYGON_API_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['stockbook22.herokuapp.com', 'localhost']
 
