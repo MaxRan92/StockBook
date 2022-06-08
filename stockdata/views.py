@@ -437,7 +437,6 @@ class StockDetail(View):
                                             math.log10(abs(big_number))/3))))
         return f'{(big_number / 10**(3 * millidx)):.2f}{millnames[millidx]}'
 
-
     def percentify(self, float_num):
         '''
         To format numbers to percent with 2

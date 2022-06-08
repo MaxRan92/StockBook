@@ -1,6 +1,0 @@
-
- /**
- * DOM elements of interest
- */
- 
-

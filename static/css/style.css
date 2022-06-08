@@ -6,16 +6,11 @@ body {
     background-color: rgba(41, 43, 44, 0.03);
 }
 
-
-
 .navbar span {
     color: #FFB30F !important;
 }
 
-
-
 /* Assets cards in index.html*/
-
 
 .index-card {
     border-radius: 5px;
@@ -61,9 +56,6 @@ body {
     color: #507DBC;
 }
 
-
-
-
 /* Stock detail */
 
 .masthead {
@@ -82,7 +74,6 @@ body {
     box-shadow: 0 4px 18px 0 rgba(41, 43, 44, 0.15), 0 6px 20px 0 rgba(41, 43, 44, 0.15);
     height: 150px;
 }
-      
 
 .detail-image-container img {
     margin: auto;
@@ -98,7 +89,7 @@ body {
     width: 100%;
     padding: 15px;
     box-shadow: 0 4px 18px 0 rgba(41, 43, 44, 0.15), 0 6px 20px 0 rgba(41, 43, 44, 0.15);
-}  
+}
 
 .card-container {
     padding: 4px;
@@ -108,7 +99,8 @@ tr {
     height: 60px !important;
 }
 
-td, th {
+td,
+th {
     width: 50%;
     vertical-align: middle;
 }
@@ -132,7 +124,6 @@ footer {
     font-size: 10px;
     background-color: #292b2C;
 }
-
 
 footer .row {
     width: 90%;
@@ -177,7 +168,6 @@ footer hr {
     min-height: 25vh;
 }
 
-
 /* comments */
 
 .comments {
@@ -217,7 +207,7 @@ footer hr {
 .btn-post-comment:hover {
     background-color: rgb(60, 179, 113, 0.3);
     font-weight: bold;
-} 
+}
 
 #post-comment-card {
     height: auto;
@@ -229,9 +219,8 @@ footer hr {
     width: 100%;
 }
 
-
 .hidden {
     visibility: hidden;
     opacity: 0;
     transition: visibility 0s 2s, opacity 2s linear;
-  }
+}
