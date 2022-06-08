@@ -170,3 +170,20 @@ A page in which the user can gather general information about the features of th
 These pages are used for user authentication and they all return messages when actions are completed.
 
 ![Sign In](docs/images/sign-in-view.png)
+
+
+
+## Future Features:
+
+* ### Stock Screener
+One of the most powerful development for StockBook would be a stock screener. Users can select performance, fundamental or sentiment paramenters as filters to find the best opportunities. 
+
+* ### Watchlist
+Another great feature would be the possibility to add any stock to favourites, in order to create watchlists with main market data. In this way, the user can easily view the live performance the stocks of interest.
+
+* ### Portfolio
+A more complex development would be the implementation of a portfolio functionality: users can add their holdings at a certain point in time in order to retrieve useful insights about the portfolio. This development would represent a big step in terms of complexity of the calculations and data storage/management.
+
+* ### News Feed
+Every Stock Detail page could have a news feed with all the relevant news regarding the ticker, provided via API.
+
