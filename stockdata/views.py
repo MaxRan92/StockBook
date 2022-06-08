@@ -360,11 +360,11 @@ class StockDetail(View):
         self.get_daily_aggs(ticker, interval, start_date, end_date)
         trades = self.aggs
 
-        for x in range(0, len(trades)):
-            date_unix_msec = trades[x].timestamp
+        for x in enumerate(trades):
+            date_unix_msec = x[1].timestamp
             date_converted = datetime.fromtimestamp(
                 date_unix_msec // 1000).date()
-            trades[x].timestamp = str(date_converted)
+            x[1].timestamp = str(date_converted)
 
         df = pd.DataFrame(trades)
         dates = df["timestamp"].tolist()
