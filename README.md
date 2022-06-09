@@ -262,6 +262,9 @@ In any stock detail page, ensure that:
 
 ## Future Features:
 
+* ### Timezone choice
+All the live market data are in UTC time zone. A future useful feature would be to give the possibility to choose time zone during user registration, so that the timestamps can be all converted accordingly.
+
 * ### Stock Screener
 One of the most powerful development for StockBook would be a stock screener. Users can select performance, fundamental or sentiment paramenters as filters to find the best opportunities. 
 
