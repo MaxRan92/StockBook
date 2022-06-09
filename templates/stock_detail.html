@@ -60,6 +60,7 @@
                 <div class="element-card">
                     <h3>YTD Price Chart</h3>
                     <canvas id="stock-chart" class="chart" style="width:75%;height:300px;"></canvas>
+                    <!-- JS included in HTML to import django templating language variables -->
                     <script>
                         var xValues = JSON.parse('{{context.dates}}');
                         var yValues = JSON.parse('{{context.prices}}');
