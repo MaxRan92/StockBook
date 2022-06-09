@@ -230,13 +230,13 @@
                             {{ comment.body | linebreaksbr }}
                             <p>
                                 {% if comment.sentiment == 'BULL' %}
-                                <p>Sentiment: <span class="text-success fw-bold"><i class="fas fa-arrow-up"></i>
-                                        Bullish</span></p>
+                                Sentiment: <span class="text-success fw-bold"><i class="fas fa-arrow-up"></i>
+                                    Bullish</span>
                                 {% elif comment.sentiment == 'BEAR' %}
-                                <p>Sentiment: <span class="text-danger fw-bold"><i class="fas fa-arrow-down"></i>
-                                        Bearish</span></p>
+                                Sentiment: <span class="text-danger fw-bold"><i class="fas fa-arrow-down"></i>
+                                    Bearish</span>
                                 {% else %}
-                                <p>Sentiment: <span class="fw-bold"><i class="fas fa-shield-alt"></i> Hold</span></p>
+                                Sentiment: <span class="fw-bold"><i class="fas fa-shield-alt"></i> Hold</span>
                                 {% endif %}
                             </p>
                             <div class="row">
