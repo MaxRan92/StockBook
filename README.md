@@ -262,6 +262,9 @@ In any stock detail page, ensure that:
 
 ## Future Features:
 
+* ### Chart Time Interval Selection
+One of the first feature I would like to implement is the possibility to select different time interval for the stock price chart.
+
 * ### Timezone choice
 All the live market data are in UTC time zone. A future useful feature would be to give the possibility to choose time zone during user registration, so that the timestamps can be all converted accordingly.
 
@@ -332,3 +335,21 @@ The site was deployed to Heroku. The steps to deploy are as follows:
   - Go back to the App page on Heroku, press "More" on the top right corner to monitor the deployment logs
 
   - Once the deployment is finished, you should be able to see the site clicking on 'Open app' on the top right corner of the page.
+
+
+
+  ## Credits
+
+### Media Credits
+- Images for companies were found on: <a href="https://wikipedia.org/"><strong>Wikipedia</strong></a>
+- Images for site (About and Home pages) were found on: <a href="https://freepik.com/"><strong>Freepik</strong></a>
+### Content Credits
+- All the description and data are provided by <a href="https://polygon.io"><strong>Polygon</strong></a> and <a href="https://pypi.org/project/yfinance/"><strong>Yfinance</strong></a> API.
+
+### Code Credits 
+- The code structure is based on the material provided during the <a href="https://codeinstitute.net/global/"><strong>Code Institute</strong></a> course.
+- The stock price chart was made with the essential help of <a href="https://www.chartjs.org/"><strong>Chart.js</strong></a> documentation. 
+
+ 
+## Acknowledgments
+- I would like to thank <a href="https://github.com/maliahavlicek"><strong>Malia</strong></a> for her help, motivation and belief in my capabilities.
