@@ -207,11 +207,42 @@ All python files passed through PEP8 with no errors.
 
     The Bootstrap5 Grid System has been largely used in the HTML code, greatly facilitating the development of responsive pages.
 
+### Link Testing
 
 #### Navigation
+    1. In the NAV bar, select the navigation options (Home, About, Register, Login, Logout and StockBook logo).
+    2. Click every mentioned link.
+    3. Ensure each link shows the assigned page named page. 
+    4. Ensure the bottom NEXT and PAGE buttons work properly.
+    5. Ensure the footer social links work properly.
 
+#### Home page links
+    1. In the home page, click on any stock card
+    2. Ensure the proper page is rendered
 
-Forms, views, urls and api TESTING RESULTS TO BE INSERTED HERE
+### CRUD Comment Testing
+In any stock detail page, ensure that:
+    1. If user is not logged in and if no comment is posted, the comments section invites the user to be the first one by logging in or registering showing clickable links.
+    2. If user is logged in, the comment form is showed, and user can input a free text and pick a sentiment with no error appearing. By clicking on the submit button, the comment is effectively added to the comment list and a pop up message appears on top of the comment form. If no text or blank space is submitted, the forms invites to compile properly. 
+    3. If user is logged in and there is one of his comments in the comment list, EDIT and DELETE buttons are showed.
+    4. If the EDIT button is clicked, the page links to a edit form. Once the amendments are made, they are submitted and showed properly, with a pop up message on top of the comment form.
+    5. If the DELETE button is clicked, the page links to a delete form in which asks for confirmation o redirects to homepage. If the delete is confirmed, the comment is effectively deleted, with a pop up message on top of the comment form.
+
+### Authentication Testing
+    1. If user is not logged in, the NAV bar shows the REGISTER and the LOGIN links.
+    2. REGISTER link leads to the register form, in which a client compiles with username, email (optional), password and password confirmation.
+    3. If the username is already taken, the sign up will not proceed and user is properly notified.
+    4. If password does not match, is empty, is too common (no special characters) or is too short, the sign up will not proceed and user is properly notified.
+    5. If the form is compiled properly, the account will be made and the new user is redirected to the home page, with a pop up message on top of the page.
+    6. LOGIN link leads to the Sign In form, in which username and password are requested. If these fields are empty or do not match with the database, the sign in will not proceed and user is properly notified.
+    7. If the form is compiled properly, the user will be logged in and will be redirected to the home page, with a pop up message on top of the page.
+    8. If user is logged in, the NAV bar shows the LOGOUT link, which leads to the sign out confirmation form. If the user confirms, he is effectively signed out.
+
+### Polygon API Testing
+    1. If API_KEY is empty or wrong, a BadResponse is generated and the code handles the error by not showing the chart and showing a site under maintenance message.
+    2. The same response is given if ConnectionError, Timeout, TooManyRedirects, RequestException and HTTPError occur.  
+![Polygon API error handling](docs/images/polygon-api-testing.png)
+
 
 
 
