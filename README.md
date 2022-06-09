@@ -40,6 +40,8 @@ The issue has now been addressed (accidentally populated additional index field 
     StockBook's target audience comprises both stock markets experts and investing beginners. However, a basic knowledge of financial instruments and indicators is required to fully understand the indicators displayed.
 
 * ### User Stories
+Used stories where created and managed via GitHub <a href="https://github.com/MaxRan92/StockBook/projects/1"><strong>here</strong></a>
+
  1. As a **Site User** I can **View a list of stocks** so that **I can decide the stock to analyse**
  2. As a **Site User** I can **register on the site** so that **I can post comments and interact**
  3. As a **Site User** I can **go to the About page** so that **I can get more general information about the site**
@@ -108,6 +110,11 @@ This data model is used to store all the relevant information about a listed sto
 | created_on  | DateTimeField     | Timestamp of the creation        | automatic                        |
 | status      | IntegerField      | Draft vs Published               | required, default is Draft       |
 
+- [ ] Create - Superadmin can Create stock via django administration
+- [x] Read - Every user can read the stock details in their page 
+- [ ] Update - Superadmin can Update stock via django administration
+- [ ] Delete - Superadmin can Delete stock via django administration
+
 
 * ### Comment
 This data model is used to store the comments of the users along with their sentiment:
@@ -172,7 +179,7 @@ These pages are used for user authentication and they all return messages when a
 ![Sign In](docs/images/sign-in-view.png)
 
 
-## API and data provider used
+## API data provider
 
 * ### Market Prices - Polygon
 To retrieve live market data, I have made a subscription to the <a href="https://polygon.io"><strong>Polygon</strong></a>. With the package provided, Stockbook is able to get Last Trades Prices with a delay of 15 mins, along with their trade timestamps.  
@@ -180,6 +187,15 @@ To retrieve live market data, I have made a subscription to the <a href="https:/
 * ### Stock Fundamentals - YFinance Library
 To get all the fundamental data of the stock (Multiples, Financials, etc.), I used the <a href="https://pypi.org/project/yfinance/"><strong>yfinance</strong></a> library that replicates the data of Yahoo Finance, made by Ran Aroussi. It is free to use and quite complete, although missing live market data.
 
+## Frameworks
+
+The Frameworks used in this projects are the following:
+
+* ### Django Framework
+
+* ### Bootstrap 5
+
+* ### Chart.js
 
 
 ## Testing
@@ -187,6 +203,8 @@ To get all the fundamental data of the stock (Multiples, Financials, etc.), I us
 ### Lighthouse Audit 
 All the pages receive scores higher than 90 in SEO, Accessibility and Best Practices.
 Performance sometimes has a score around 80 because some pictures are in high resolution. API calls may add some time to the page loading. Given this, the performance of the site looks still solid.
+
+![Lighthouse](docs/images/lighthouse-home.png)
 
 ### Validator Testing 
 * ### W3C CSS Validation 
@@ -257,6 +275,20 @@ In any stock detail page, ensure that:
 
 ![Yfinance Wrong Ticker](docs/images/wrong-ticker-api-test.png)
 
+
+### Automated Testing
+No automated testing was achieved at this time.
+
+
+## Defects
+
+Here are some defects encountered during the development of the website:
+
+ - API Error management: both Polygon and Yfinance can raise different kinds of errors due to wrong API, data not existing or empty, change in the data structure provided. These defects where managed via proper error handling and the manual testing resulted in no bad website response.
+
+ - As mentioned above, in one of the first migrations for the database, I added fields to an existing database populating with same string character via GitPod terminal. Unfortunately this compromised the data model and I had to restart the project. Further research will be made in order to find a better solution.
+
+ - In the first attempts to import data in the stock price chart, chart.js turned out to not accept pandas dataframe as a viable input. The issue was resolved converting the pandas dataframe to a json object via json.dump(). 
 
 
 
