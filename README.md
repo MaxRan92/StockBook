@@ -240,9 +240,22 @@ In any stock detail page, ensure that:
 
 ### Polygon API Testing
 1. If API_KEY is empty or wrong, a BadResponse is generated and the code handles the error by not showing the chart and showing a site under maintenance message.
-2. The same response is given if ConnectionError, Timeout, TooManyRedirects, RequestException and HTTPError occur.  
+2. The same response is given if ConnectionError, Timeout, TooManyRedirects, RequestException and HTTPError occur.
+3. The same response is given if the ticker of the stock does not exist.   
 ![Polygon API error handling](docs/images/polygon-api-testing.png)
 
+### YFinance Testing
+1. If Yfinance call returns ConnectionError, AttributeError, Timeout, TooManyRedirects, RequestException, HTTPError, exceptions.BadResponse, or if it returns empty string, the Fundamental data area is not shown.
+
+![Yfinance API Error](docs/images/yfinance-api-error.png)
+
+2. YFinance .stats() data call, used in the website, returns a long dictionary of data and chosen dictionary values are called via their key string. The main risk is if the data provider changes these keys. Manual testing has been made with fake keys, and the fundamental data cards will render those improperly called data with a "-".   
+
+![Yfinance Key Error](docs/images/yfinance-key-error.png)
+
+3. If the ticker of the stock does not exist, all these data fields will be set to "-".
+
+![Yfinance Wrong Ticker](docs/images/wrong-ticker-api-test.png)
 
 
 

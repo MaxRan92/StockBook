@@ -400,8 +400,8 @@ class StockDetail(View):
             client = RESTClient(API_KEY)
             self.aggs = client.get_aggs(
                 ticker, 1, timespan, start_date, end_date)
-        except (ConnectionError, Timeout, TooManyRedirects, RequestException,
-                HTTPError, exceptions.BadResponse):
+        except (ConnectionError, AttributeError, Timeout, TooManyRedirects,
+                RequestException, HTTPError, exceptions.BadResponse):
             self.api_error = True
 
     def get_stock_info(self, ticker):
@@ -410,7 +410,11 @@ class StockDetail(View):
         in the form of a dictionary
         If dictionary is empty, sets yfinance_error to true.
         '''
-        self.stock_data = yf.Ticker(ticker).stats()
+        try:
+            self.stock_data = yf.Ticker(ticker).stats()
+        except (ConnectionError, AttributeError, Timeout, TooManyRedirects,
+                RequestException, HTTPError, exceptions.BadResponse):
+            self.yfinance_error = True
 
         if len(self.stock_data) == 0:
             self.yfinance_error = True
