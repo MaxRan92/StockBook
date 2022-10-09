@@ -94,7 +94,7 @@ class StockDetail(View):
     api_error = yfinance_error = False
     context = {}
     bulls_num = bears_num = hold_num = bulls_bears_ratio = ""
-    last_trade_price = daily_perf = last_trade_data = aggs = \
+    last_trade_price = daily_perf = daily_perf_value = last_trade_data = aggs = \
         stock_data = ""
     last_trade_timestamp = last_trade_datetime = \
         last_trade_datetime_converted = ""
@@ -160,6 +160,7 @@ class StockDetail(View):
                 "last_trade_price": self.last_trade_price,
                 "last_trade_datetime": self.last_trade_datetime,
                 "daily_perf": self.daily_perf,
+                "daily_perf_value": self.daily_perf_value,
                 "price_earnings": self.price_earnings,
                 "price_to_fcf": self.price_to_fcf,
                 "profit_margin": self.profit_margin,
@@ -236,8 +237,8 @@ class StockDetail(View):
             # if aggregates data from Polygon API is received, return last
             # close and calculate performance, otherwise return API error
             last_close = self.aggs[0].close
-            self.daily_perf = self.percentify(
-                self.last_trade_price / last_close - 1)
+            self.daily_perf_value = self.last_trade_price / last_close - 1
+            self.daily_perf = self.percentify(self.daily_perf_value)
 
     def get_yfinance_figures(self, ticker):
         '''
@@ -500,6 +501,7 @@ class StockDetail(View):
                 "last_trade_price": self.last_trade_price,
                 "last_trade_datetime": self.last_trade_datetime,
                 "daily_perf": self.daily_perf,
+                "daily_perf_value": self.daily_perf_value,
                 "price_earnings": self.price_earnings,
                 "price_to_fcf": self.price_to_fcf,
                 "profit_margin": self.profit_margin,

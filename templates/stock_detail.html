@@ -24,10 +24,10 @@
                     <!-- asset title goes in these h1 tags, followed by Price data, currency and last update -->
                     <h1 class="fw-bold">{{ stockinfo.title }} ({{ stockinfo.ticker }})</h1>
                     {% if not api_error %}
-                    {% if daily_perf > 0 %}
+                    {% if daily_perf_value > 0 %}
                     <h3 class="fw-bold">Last Price: <span class="text-success">{{ last_trade_price }} {{ currency }}
                             ({{ daily_perf }})</span></h3>
-                    {% elif daily_perf == 0 %}
+                    {% elif daily_perf_value == 0 %}
                     <h3 class="fw-bold">Last Price: <span>{{ last_trade_price }} {{ currency }}
                             ({{ daily_perf }})</span></h3>
                     {% else %}
